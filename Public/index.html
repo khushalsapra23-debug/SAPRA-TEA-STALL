@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b2a20">
+<title>SAPRA TEA STALL - Order for pickup</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b2a20'/%3E%3Cpath d='M24 19c-3-4 3-6 0-11M32 17c-3-4 3-6 0-12M40 19c-3-4 3-6 0-11' fill='none' stroke='%23f2a93b' stroke-width='2.5' stroke-linecap='round'/%3E%3Cpath d='M12 27h36v10a13 13 0 0 1-13 13H25A13 13 0 0 1 12 37z' fill='%23f5f8f6'/%3E%3Cpath d='M18 35h24' stroke='%230f9d63' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night:#0b2a20;      /* deep metro green-black */
+    --pine:#14503d;
+    --metro:#0f9d63;      /* Green Line */
+    --metro-ink:#0a6f46;
+    --amber:#f2a93b;      /* chai */
+    --amber-ink:#8a5a0c;
+    --paper:#f5f8f6;
+    --white:#ffffff;
+    --ink:#10231c;
+    --muted:#5b6c64;
+    --line:#dbe5df;
+    --alert:#b3321f;
+    --display:'Bricolage Grotesque','DM Sans',system-ui,sans-serif;
+    --body:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:var(--body);color:var(--ink);background:var(--paper);line-height:1.55;font-size:16px;padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+  h1,h2,h3{font-family:var(--display);margin:0}
+  button,input,textarea{font:inherit;color:inherit}
+  a{color:inherit}
+  :focus-visible{outline:3px solid var(--amber);outline-offset:3px}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+  .narrow{max-width:760px;margin:0 auto;padding:0 20px}
+
+  /* ---------- Hero ---------- */
+  .hero{background:var(--night);color:#fff;padding:calc(18px + env(safe-area-inset-top,0px)) 0 0;overflow:hidden;position:relative}
+  .topline{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .brand{display:block;line-height:0}
+  .logo{width:46px;height:46px;display:block}
+  .status{display:inline-flex;align-items:center;gap:8px;font-size:.9rem;font-weight:500;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:6px 14px}
+  .dot{width:9px;height:9px;border-radius:50%;background:#7a8a83}
+  .status.open .dot{background:#3ddc97;box-shadow:0 0 0 4px rgba(61,220,151,.22)}
+  .right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .switch{display:flex;width:max-content;max-width:100%;overflow-x:auto;margin-top:16px;scrollbar-width:none;background:rgba(255,255,255,.12);border-radius:999px;padding:3px}
+  .switch a{padding:6px 14px;border-radius:999px;text-decoration:none;font-size:.9rem;font-weight:600;color:#cfe3d9}
+  .switch a.on{background:#fff;color:var(--ink)}
+  .herogrid{display:grid;grid-template-columns:1.15fr .85fr;align-items:center;gap:20px;padding:44px 0 0}
+  .hero h1{font-weight:800;font-size:clamp(2.5rem,8.2vw,4.6rem);line-height:1;letter-spacing:-.025em;max-width:11ch}
+  .hero p.lead{font-size:1.1rem;color:#c5d8cf;max-width:34ch;margin:18px 0 26px}
+  .cta{display:flex;gap:12px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:14px;padding:13px 22px;font-weight:600;cursor:pointer;background:var(--amber);color:#2a1b00;font-size:1rem;text-decoration:none;transition:transform .15s ease,background .15s ease}
+  .btn:hover{transform:translateY(-1px)}
+  .btn.green{background:var(--metro);color:#fff}
+  .btn.ghost{background:transparent;border:1.5px solid rgba(255,255,255,.4);color:#fff}
+  .btn.line{background:transparent;border:1.5px solid #b7c9bf;color:var(--ink)}
+  .btn[disabled]{opacity:.55;cursor:not-allowed;transform:none}
+  .cup{width:100%;max-width:340px;justify-self:center;display:block}
+  .steam path{fill:none;stroke:var(--amber);stroke-width:5;stroke-linecap:round;opacity:0;animation:rise 3.4s ease-in-out infinite}
+  .steam path:nth-child(2){animation-delay:.9s}
+  .steam path:nth-child(3){animation-delay:1.8s}
+  @keyframes rise{0%{opacity:0;transform:translateY(14px)}30%{opacity:.9}100%{opacity:0;transform:translateY(-16px)}}
+
+  /* station-board strip */
+  .board{display:flex;align-items:stretch;margin-top:44px;border-radius:16px 16px 0 0;overflow:hidden;background:#fff;color:var(--ink)}
+  .board .line-tag{background:var(--metro);color:#fff;font-family:var(--display);font-weight:800;padding:14px 18px;display:flex;align-items:center;font-size:.95rem}
+  .board .where{padding:12px 18px;flex:1}
+  .board .where strong{display:block;font-family:var(--display);font-size:1.15rem;line-height:1.2}
+  .board .where span{color:var(--muted);font-size:.9rem}
+
+  /* ---------- How it works ---------- */
+  .facts{display:flex;flex-wrap:wrap;gap:12px 36px;padding:22px 20px;font-size:.98rem;color:var(--muted)}
+  .facts b{color:var(--ink);font-weight:600}
+
+  .notice{border-radius:14px;padding:14px 16px;margin:0 0 16px;background:#fdf1d8;border:1px solid #ecc57a}
+  .paused{background:#fbe4df;border-color:#e3a398}
+
+  /* ---------- Menu ---------- */
+  .menuhead{padding-top:8px}
+  .menuhead h2{font-weight:800;font-size:clamp(1.9rem,6vw,2.6rem);letter-spacing:-.02em}
+  nav.cats{position:sticky;top:0;z-index:6;background:rgba(245,248,246,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:10px 0;border-bottom:1px solid var(--line);margin-top:14px}
+  nav.cats .narrow{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+  nav.cats .narrow::-webkit-scrollbar{display:none}
+  .chip{white-space:nowrap;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:7px 16px;cursor:pointer;font-weight:500}
+  .chip.on{background:var(--night);color:#fff;border-color:var(--night)}
+
+  section.group{margin:34px 0 8px;scroll-margin-top:70px}
+  section.group h3{font-weight:800;font-size:1.5rem;letter-spacing:-.01em;margin-bottom:6px}
+  .item{display:flex;align-items:center;gap:10px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .item .t{min-width:0}
+  .item .n{font-weight:600;font-size:1.05rem}
+  .v{color:var(--muted);font-size:.9rem}
+  .item .lead{flex:1;min-width:12px;border-bottom:2px dotted #b3c5bb;align-self:center;margin-top:4px}
+  .price{font-family:var(--display);font-weight:800;font-size:1.15rem;white-space:nowrap}
+  .stepper{display:flex;align-items:center;gap:8px;margin-left:6px}
+  .stepper button{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--metro);background:#fff;color:var(--metro-ink);font-size:1.3rem;line-height:1;cursor:pointer}
+  .stepper button.add{width:auto;border-radius:999px;padding:0 18px;background:var(--metro);color:#fff;font-weight:600;font-size:.98rem;border-color:var(--metro)}
+  .stepper .q{min-width:22px;text-align:center;font-weight:700}
+
+  /* ---------- Cart bar ---------- */
+  .bar{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:10;max-width:560px;margin:0 auto;background:var(--night);color:#fff;border-radius:20px;padding:10px 10px 10px 20px;box-shadow:0 12px 32px rgba(8,30,22,.35)}
+  .bar .in{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .bar strong{font-family:var(--display);font-size:1.05rem}
+  .bar .sub{color:#b9cfc5;font-size:.9rem;display:block;line-height:1.2}
+
+  /* ---------- Sheets ---------- */
+  .sheet{position:fixed;inset:0;background:rgba(6,22,16,.6);z-index:20;display:none;align-items:flex-end;justify-content:center}
+  .sheet.open{display:flex}
+  .panel{background:#fff;width:100%;max-width:640px;max-height:92vh;overflow:auto;border-radius:24px 24px 0 0;padding:22px 20px calc(26px + env(safe-area-inset-bottom,0px))}
+  .panel h2{font-weight:800;font-size:1.7rem;letter-spacing:-.015em;margin-bottom:10px}
+  .row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line)}
+  .row .nm{flex:1}
+  .row.total{font-weight:700;font-size:1.15rem;border-bottom:0;padding-top:14px}
+  label{display:block;font-weight:600;margin:16px 0 6px}
+  input[type=text],input[type=tel],textarea{width:100%;border:1.5px solid #c3d2c9;border-radius:12px;padding:12px 14px;background:#fff}
+  input:focus,textarea:focus{border-color:var(--metro);outline:0;box-shadow:0 0 0 4px rgba(15,157,99,.16)}
+  .pay{display:grid;gap:10px;margin-top:8px}
+  .pay label{display:flex;gap:12px;align-items:flex-start;font-weight:500;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;margin:0;cursor:pointer}
+  .pay label:has(input:checked){border-color:var(--metro);background:#effaf4}
+  .pay input{margin-top:5px;accent-color:var(--metro)}
+  .err{color:var(--alert);font-weight:600;min-height:1.4em;margin:12px 0 0}
+  .big{font-family:var(--display);font-size:2.3rem;font-weight:800;color:var(--metro-ink);letter-spacing:-.01em}
+  .actions{display:grid;gap:10px;margin-top:16px}
+  .panel .btn.ghost{color:var(--ink);border-color:#b7c9bf}
+
+  /* ---------- Footer ---------- */
+  footer{background:var(--night);color:#c5d8cf;margin-top:56px;padding:40px 0 calc(120px + env(safe-area-inset-bottom,0px))}
+  footer h2{color:#fff;font-weight:800;font-size:1.6rem;letter-spacing:-.01em;margin-bottom:12px}
+  footer .cols{display:grid;grid-template-columns:1.2fr 1fr;gap:28px}
+  footer p{margin:0 0 6px}
+  footer .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+  footer .btn.ghost{color:#fff}
+  .brands{display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px;margin:6px 0 22px;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .brands .bt{color:var(--muted);font-size:.95rem;margin-right:6px}
+  .brands b{font-family:var(--display);font-weight:800;font-size:1.05rem;background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:5px 16px}
+  .fine{margin-top:28px;font-size:.88rem;color:#8fa89c}
+
+  @media (max-width:760px){
+    .herogrid{grid-template-columns:1fr;padding-top:30px;gap:6px}
+    .cup{max-width:230px;order:-1;justify-self:start;margin-left:-6px}
+    .hero h1{max-width:12ch}
+    footer .cols{grid-template-columns:1fr}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    .steam path{animation:none;opacity:.7}
+    .btn{transition:none}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="topline">
+      <a class="brand" href="/" aria-label="Sapra Tea Stall home">
+        <svg class="logo" viewBox="0 0 64 64" role="img" aria-label="Sapra Tea Stall logo">
+          <path d="M24 19c-3-4 3-6 0-11M32 17c-3-4 3-6 0-12M40 19c-3-4 3-6 0-11" fill="none" stroke="#f2a93b" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M12 27h36v10a13 13 0 0 1-13 13H25A13 13 0 0 1 12 37z" fill="#f5f8f6"/>
+          <path d="M48 30h3a6 6 0 0 1 0 12h-4" fill="none" stroke="#f5f8f6" stroke-width="3" stroke-linecap="round"/>
+          <path d="M18 35h24" stroke="#0f9d63" stroke-width="3" stroke-linecap="round"/>
+          <ellipse cx="30" cy="55" rx="23" ry="3.5" fill="#14503d"/>
+        </svg>
+      </a>
+      <div class="right">
+        <div class="status" id="status"><span class="dot"></span><span id="statusTxt">Checking hours</span></div>
+      </div>
+    </div>
+
+    <nav class="switch" aria-label="Site pages">
+      <a class="on" href="#top">Home</a><a href="#menuTop">Menu</a><a href="#contact">Contact</a><a href="/admin.html">Staff login</a>
+    </nav>
+
+    <div class="herogrid">
+      <div>
+        <h1>Hot chai, ready when you reach.</h1>
+        <p class="lead">Order tea, omelette and quick bites from your phone. Collect at the stall and pay at the shop.</p>
+        <div class="cta">
+          <a class="btn" href="#menuTop">Start your order</a>
+          <a class="btn ghost" id="callTop" href="#">Call the stall</a>
+        </div>
+      </div>
+      <svg class="cup" viewBox="0 0 220 220" role="img" aria-label="A steaming cup of chai">
+        <g class="steam">
+          <path d="M85 82c-11-13 11-22 0-38"/>
+          <path d="M107 78c-11-13 11-23 0-40"/>
+          <path d="M129 82c-11-13 11-22 0-38"/>
+        </g>
+        <ellipse cx="105" cy="195" rx="82" ry="10" fill="#14503d"/>
+        <path d="M50 100H160V140A45 45 0 0 1 115 185H95A45 45 0 0 1 50 140Z" fill="#f5f8f6"/>
+        <path d="M160 114H171a20 20 0 0 1 0 40H156" fill="none" stroke="#f5f8f6" stroke-width="9" stroke-linecap="round"/>
+        <ellipse cx="105" cy="100" rx="55" ry="9" fill="#c98a2b"/>
+        <path d="M62 124h86" stroke="#0f9d63" stroke-width="6" stroke-linecap="round" opacity=".9"/>
+        <path d="M70 142h70" stroke="#f2a93b" stroke-width="6" stroke-linecap="round" opacity=".9"/>
+      </svg>
+    </div>
+
+    <div class="board">
+      <div class="line-tag">Green Line</div>
+      <div class="where"><strong>Under Ashok Park Main Metro Station</strong><span id="addr">Phool Bagh, Rohtak Road, New Delhi</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="narrow">
+  <div class="facts">
+    <span><b>Pickup only.</b> No delivery.</span>
+    <span><b>Pay at the shop</b> by cash or online (UPI).</span>
+    <span id="hours"><b>Open</b> daily, 12 PM to 12 AM</span>
+    <span><b>Owner:</b> Harish Kumar</span>
+  </div>
+  <div class="brands"><span class="bt">Products direct from</span><b>Pepsi</b><b>Amul</b><b>Havmor</b></div>
+  <div id="pausedBox" class="notice paused" hidden role="alert"></div>
+</div>
+
+<main>
+  <div class="narrow menuhead" id="menuTop"><h2>Menu</h2></div>
+  <nav class="cats" aria-label="Menu categories"><div class="narrow" id="chips"></div></nav>
+  <div class="narrow" id="menu"><p>Loading menu…</p></div>
+</main>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <h2>Find us</h2>
+        <p id="addr2"></p>
+        <p>Under Ashok Park Main Metro Station</p>
+        <p>Owner: Harish Kumar</p>
+        <p id="hours2"></p>
+      </div>
+      <div>
+        <h2>Contact us</h2>
+        <p>Call or WhatsApp the stall on <strong id="phoneTxt" style="color:#fff"></strong>.</p>
+        <div class="btns">
+          <a class="btn ghost" id="callBtm" href="#">Call</a>
+          <a class="btn ghost" id="waBtm" href="#" target="_blank" rel="noopener">WhatsApp</a>
+          <a class="btn ghost" id="dirBtm" href="#" target="_blank" rel="noopener">Directions</a>
+        </div>
+      </div>
+    </div>
+    <p class="fine">Pickup only. Pay at the shop when you collect.</p>
+  </div>
+</footer>
+
+<div class="bar" id="bar" hidden>
+  <div class="in">
+    <div><strong id="barCount"></strong><span class="sub" id="barTotal"></span></div>
+    <button class="btn" id="openCart">View order</button>
+  </div>
+</div>
+
+<div class="sheet" id="cartSheet" role="dialog" aria-modal="true" aria-label="Your order">
+  <div class="panel">
+    <h2>Your order</h2>
+    <div id="cartLines"></div>
+    <label for="cname">Your name</label>
+    <input id="cname" type="text" autocomplete="name" maxlength="60">
+    <label for="cphone">Mobile number</label>
+    <input id="cphone" type="tel" inputmode="numeric" autocomplete="tel" maxlength="14" placeholder="10-digit number">
+    <label for="cnote">Note for the stall (optional)</label>
+    <textarea id="cnote" rows="2" maxlength="140" placeholder="For example: less sugar in the tea"></textarea>
+    <label style="margin-bottom:0">How will you pay at the shop?</label>
+    <div class="pay">
+      <label><input type="radio" name="pm" value="UPI" checked><span><strong>Online (UPI) at the shop</strong><br><span class="v">Pay online by UPI when you collect.</span></span></label>
+      <label><input type="radio" name="pm" value="Cash"><span><strong>Cash at the shop</strong><br><span class="v">Pay cash when you collect.</span></span></label>
+    </div>
+    <div class="notice" style="margin:16px 0 0">Pay at the shop when you collect. Collect from the stall under Ashok Park Main Metro Station and show your order ID.</div>
+    <p class="err" id="cartErr" role="alert"></p>
+    <div class="actions">
+      <button class="btn green" id="placeBtn">Place order</button>
+      <button class="btn line" id="closeCart">Keep browsing</button>
+    </div>
+  </div>
+</div>
+
+<div class="sheet" id="doneSheet" role="dialog" aria-modal="true" aria-label="Order placed">
+  <div class="panel" id="donePanel"></div>
+</div>
+
+<script>
+(function(){
+  var S = { data:null, cart:{}, order:null };
+  var $ = function(id){ return document.getElementById(id); };
+  var esc = function(s){ return String(s).replace(/[&<
