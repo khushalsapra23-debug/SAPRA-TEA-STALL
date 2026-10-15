@@ -100,7 +100,6 @@ function parseStaff(env) {
   }
   return m;
 }
-}
 
 async function isAdmin(req, env) {
   const given = req.headers.get('x-admin-password') || '';
