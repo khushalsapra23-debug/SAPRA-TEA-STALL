@@ -40,6 +40,7 @@ async function route(req, env, url) {
   if (p === '/api/order' && m === 'POST') return placeOrder(req, env);
 
   if (p.startsWith('/api/admin/')) {
+    if (!parseStaff(env).size) return json({ ok: false, message: 'Staff logins are not set up yet. The owner must add STAFF_LOGINS in Cloudflare (see README).' }, 503);
     const ip = req.headers.get('cf-connecting-ip') || 'unknown';
     const user = (req.headers.get('x-admin-user') || '').trim().toLowerCase().slice(0, 30);
     const nowS = Math.floor(Date.now() / 1000);
