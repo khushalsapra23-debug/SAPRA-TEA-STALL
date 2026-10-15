@@ -42,24 +42,16 @@ async function route(req, env, url) {
   if (p.startsWith('/api/admin/')) {
     if (!parseStaff(env).size) return json({ ok: false, message: 'Staff logins are not set up yet. The owner must add STAFF_LOGINS in Cloudflare (see README).' }, 503);
     const ip = req.headers.get('cf-connecting-ip') || 'unknown';
-    const user = (req.headers.get('x-admin-user') || '').trim().toLowerCase().slice(0, 30);
     const nowS = Math.floor(Date.now() / 1000);
-    // Lock out by IP (5 tries) and by username (10 tries) for 10 minutes
-    const tracked = [];
-    for (const [k, max] of [[ip, 5], ...(user ? [['u:' + user, 10]] : [])]) {
-      const rec = await env.DB.prepare('SELECT n, t FROM login_fails WHERE ip = ?').bind(k).first();
-      const recent = !!rec && nowS - rec.t < 600;
-      if (recent && rec.n >= max) return json({ ok: false, message: 'Too many wrong attempts. Please wait 10 minutes and try again.' }, 429);
-      tracked.push({ k, rec, recent });
+    const rec = await env.DB.prepare('SELECT n, t FROM login_fails WHERE ip = ?').bind(ip).first();
+    const recent = !!rec && nowS - rec.t < 600;
+    if (recent && rec.n >= 5) return json({ ok: false, message: 'Too many wrong attempts. Please wait 10 minutes and try again.' }, 429);
+    if (!(await isAdmin(req, env))) {
+      const n = recent ? rec.n + 1 : 1;
+      await env.DB.prepare('INSERT INTO login_fails (ip, n, t) VALUES (?,?,?) ON CONFLICT(ip) DO UPDATE SET n = excluded.n, t = excluded.t').bind(ip, n, nowS).run();
+      return json({ ok: false, message: 'Wrong PIN.' }, 401);
     }
-    if (!(await isAdmin(req, env, user))) {
-      for (const { k, rec, recent } of tracked) {
-        const n = recent ? rec.n + 1 : 1;
-        await env.DB.prepare('INSERT INTO login_fails (ip, n, t) VALUES (?,?,?) ON CONFLICT(ip) DO UPDATE SET n = excluded.n, t = excluded.t').bind(k, n, nowS).run();
-      }
-      return json({ ok: false, message: 'Wrong username or PIN.' }, 401);
-    }
-    for (const { k, rec } of tracked) if (rec) await env.DB.prepare('DELETE FROM login_fails WHERE ip = ?').bind(k).run();
+    if (rec) await env.DB.prepare('DELETE FROM login_fails WHERE ip = ?').bind(ip).run();
     if (p === '/api/admin/orders' && m === 'GET') return adminOrders(env);
     if (p === '/api/admin/order' && m === 'POST') return adminUpdateOrder(req, env);
     if (p === '/api/admin/accepting' && m === 'POST') return adminAccepting(req, env);
@@ -92,33 +84,36 @@ async function nextOrderId(env) {
   return 'ST' + day + '-' + String(row.n).padStart(3, '0');
 }
 
-// Logins come from secrets: STAFF_LOGINS = "ravi:1234,amit:5678" (username:PIN, comma separated).
-// ADMIN_PASSWORD, if set, still works as the login "admin".
+// PIN-only login. Set the secret STAFF_LOGINS to 4-digit PINs separated by commas, e.g. "1234,5678,4321".
+// A label is optional: "owner:1234,ravi:5678". Every PIN must be different.
+// ADMIN_PASSWORD, if set, also works as a PIN.
 function parseStaff(env) {
-  const m = new Map();
-  if (env.ADMIN_PASSWORD) m.set('admin', String(env.ADMIN_PASSWORD));
+  const m = new Map(); // pin -> label
+  if (env.ADMIN_PASSWORD) m.set(String(env.ADMIN_PASSWORD).trim(), 'admin');
   for (const part of String(env.STAFF_LOGINS || '').split(',')) {
-    const i = part.indexOf(':');
-    if (i < 1) continue;
-    const u = part.slice(0, i).trim().toLowerCase(), pw = part.slice(i + 1).trim();
-    if (u && pw) m.set(u, pw);
+    const t = part.trim();
+    if (!t) continue;
+    const i = t.lastIndexOf(':');
+    const pin = (i < 0 ? t : t.slice(i + 1)).trim();
+    const label = i < 0 ? 'staff' : t.slice(0, i).trim() || 'staff';
+    if (pin) m.set(pin, label);
   }
   return m;
 }
 
-async function isAdmin(req, env, user) {
-  const staff = parseStaff(env);
+async function isAdmin(req, env) {
   const given = req.headers.get('x-admin-password') || '';
-  const expected = staff.get(user) || '\u0000no-such-user';
   const enc = new TextEncoder();
-  const [a, b] = await Promise.all([
-    crypto.subtle.digest('SHA-256', enc.encode(given)),
-    crypto.subtle.digest('SHA-256', enc.encode(expected))
-  ]);
-  const x = new Uint8Array(a), y = new Uint8Array(b);
-  let diff = 0;
-  for (let i = 0; i < x.length; i++) diff |= x[i] ^ y[i];
-  return staff.has(user) && diff === 0;
+  const hash = async (v) => new Uint8Array(await crypto.subtle.digest('SHA-256', enc.encode(v)));
+  const g = await hash(given);
+  let ok = false;
+  for (const pin of parseStaff(env).keys()) {
+    const h = await hash(pin);
+    let diff = 0;
+    for (let i = 0; i < g.length; i++) diff |= g[i] ^ h[i];
+    if (diff === 0) ok = true;
+  }
+  return ok;
 }
 
 /* ---------- Customer API ---------- */
