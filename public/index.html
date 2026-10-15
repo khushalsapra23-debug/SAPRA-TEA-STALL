@@ -318,4 +318,8 @@ header{background:linear-gradient(135deg,#0b2a20,#103c2c 60%,#1b5b43)}
   btn.addEventListener('click',function(e){ e.stopPropagation(); setOpen(list.hidden); });
   document.addEventListener('click',function(e){ if(!box.contains(e.target)) setOpen(false); });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ setOpen(false); btn.focus(); } });
-  list.addEventListene
+    list.addEventListener('click',function(e){ if(e.target.closest('a')) setOpen(false); });
+})();
+</script>
+</body>
+</html>
