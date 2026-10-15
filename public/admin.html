@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Staff login</title>
+<style>
+  :root{--ink:#17251f;--muted:#5c6b64;--line:#d8e3dc;--mist:#f1f6f3;--metro:#0a7d4f;--chai:#d9972b;--alert:#b3321f}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--mist);color:var(--ink);line-height:1.45}
+  .wrap{max-width:900px;margin:0 auto;padding:0 14px 40px}
+  header{background:var(--ink);color:#fff;padding:12px 0}
+  header .wrap{display:flex;justify-content:space-between;align-items:center;padding-bottom:0}
+  h1{font-size:1.1rem;margin:0}
+  button,input,select,textarea{font:inherit;color:inherit}
+  button{cursor:pointer;border:0;border-radius:8px;padding:9px 14px;font-weight:600;background:var(--metro);color:#fff}
+  button.ghost{background:#fff;border:1px solid #aebdb5;color:var(--ink)}
+  button.danger{background:var(--alert)}
+  input,select,textarea{border:1px solid #aebdb5;border-radius:8px;padding:8px 10px;background:#fff;max-width:100%}
+  .card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-top:12px}
+  .tabs{display:flex;gap:8px;margin-top:14px}
+  .tabs button{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  .tabs button.on{background:var(--ink);color:#fff}
+  .loginpage{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:#0b2a20}
+  .logincard{background:#fff;border-radius:20px;width:100%;max-width:400px;padding:28px 24px}
+  .logincard h1{font-size:1.7rem;margin:0 0 4px}
+  .logincard .sub{color:var(--muted);margin:0 0 18px}
+  .logincard label{display:block;font-weight:600;margin:12px 0 6px}
+  .logincard input[type=password],.logincard input[type=text]{width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid #c3d2c9}
+  .pwrow{position:relative}
+  .pwrow input{padding-right:76px!important}
+  .pwrow button{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:transparent;color:var(--metro);padding:6px 10px}
+  .chk{display:flex;align-items:flex-start;gap:8px;margin:14px 0;font-size:.92rem;font-weight:400!important}
+  .logincard .go{width:100%;padding:13px;font-size:1rem}
+  .sw{display:inline-flex;flex-wrap:wrap;background:#eaf2ed;border-radius:999px;padding:3px;margin-bottom:16px}
+  .sw a{padding:6px 14px;border-radius:999px;text-decoration:none;font-size:.9rem;font-weight:600;color:var(--muted)}
+  .sw a.on{background:var(--ink);color:#fff}
+  .hl{color:#fff;margin-right:14px;font-weight:600}
+  .dots{display:flex;justify-content:center;gap:14px;margin:6px 0 20px}
+  .dots i{width:15px;height:15px;border-radius:50%;border:2px solid #8aa89a;display:block}
+  .dots i.on{background:var(--ink);border-color:var(--ink)}
+  .keys{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .keys button{background:#f1f6f3;color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:16px 0;font-size:1.4rem;font-weight:600}
+  .keys button:active{background:#dfece5}
+  .keys button.small{font-size:.95rem}
+  .shake{animation:shake .35s}
+  @keyframes shake{20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+  @media (prefers-reduced-motion:reduce){.shake{animation:none}}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-top:12px}
+  .tile{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;color:var(--muted);font-size:.9rem}
+  .tile b{display:block;font-size:1.5rem;color:var(--ink)}
+  .err{color:var(--alert);font-weight:600;min-height:1.3em}
+  .pausebar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;border-left:6px solid var(--metro)}
+  .pausebar.off{border-left-color:var(--alert);background:#fbe4df}
+  .oh{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+  .oid{font-weight:800}
+  .m{color:var(--muted);font-size:.9rem}
+  .sel{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .tag{display:inline-block;border-radius:99px;padding:1px 10px;font-size:.8rem;font-weight:600;background:#e6efe9}
+  .tag.new{background:var(--chai);color:var(--ink)}
+  table{width:100%;border-collapse:collapse}
+  td,th{padding:5px 4px;text-align:left;vertical-align:middle;font-size:.92rem}
+  td input[type=text]{width:100%}
+  td input.p{width:70px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+  [hidden]{display:none!important}
+
+.kebab{position:relative;flex:none}
+.kebab>button{width:44px;height:44px;border:0;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;display:flex;align-items:center;justify-content:center;padding:0}
+.kebab>button:hover,.kebab>button[aria-expanded="true"]{background:rgba(255,255,255,.28)}
+.kebab>button:focus-visible{outline:3px solid #ffd98a;outline-offset:2px}
+.kebab svg{width:22px;height:22px;fill:currentColor}
+.kebab ul{position:absolute;right:0;top:calc(100% + 8px);z-index:50;margin:0;padding:6px;list-style:none;min-width:170px;background:#fff;border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.25)}
+.kebab ul[hidden]{display:none}
+.kebab li a{display:block;padding:12px 14px;border-radius:8px;color:#17251f;text-decoration:none;font-weight:600}
+.kebab li a:hover,.kebab li a:focus-visible{background:#e6efe9;outline:none}
+.kebab li a[aria-current="page"]{background:#103c2c;color:#fff}
+  .loginpage{position:relative}
+  .loginpage .kebab{position:absolute;top:16px;right:16px}
+  header .kebab{margin-left:10px}
+  header .wrap>span{display:flex;align-items:center;gap:6px}
+</style>
+</head>
+<body>
+
+<div class="loginpage" id="login">
+  <div class="kebab" id="kebab"><button type="button" id="kebabBtn" aria-label="Open menu" aria-haspopup="true" aria-expanded="false" aria-controls="kebabList"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2.2"/><circle cx="12" cy="12" r="2.2"/><circle cx="12" cy="19" r="2.2"/></svg></button><ul id="kebabList" hidden><li><a href="/">Home</a></li><li><a href="/#menuSection">Menu</a></li><li><a href="/admin.html" aria-current="page">Staff login</a></li></ul></div>
+  <div class="logincard" id="pinBox">
+    <h1>Staff login</h1>
+    <p class="sub">Enter your username, then your 4-digit PIN.</p>
+    <label for="uname">Username</label>
+    <input type="text" id="uname" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="30" placeholder="Your username">
+    <div class="dots" id="dots" style="margin-top:18px"><i></i><i></i><i></i><i></i></div>
+    <div class="keys" id="keys">
+      <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button>
+      <button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button>
+      <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button>
+      <button data-k="clr" class="small">Clear</button><button data-k="0">0</button><button data-k="del" aria-label="Delete last digit">&#9003;</button>
+    </div>
+    <label class="chk"><input type="checkbox" id="keep"><span>Stay signed in on this device. Use only on your own phone or computer.</span></label>
+    <p class="err" id="loginErr" role="alert"></p>
+    <p class="m">Signed out automatically after 12 hours.</p>
+  </div>
+</div>
+
+<div id="app" hidden>
+  <header><div class="wrap"><h1>Staff dashboard</h1><span><button class="ghost" id="logout">Log out</button><div class="kebab" id="kebab2"><button type="button" id="kebabBtn2" aria-label="Open menu" aria-haspopup="true" aria-expanded="false" aria-controls="kebabList2"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2.2"/><circle cx="12" cy="12" r="2.2"/><circle cx="12" cy="19" r="2.2"/></svg></button><ul id="kebabList2" hidden><li><a href="/">Home</a></li><li><a href="/#menuSection">Menu</a></li><li><a href="/admin.html" aria-current="page">Staff login</a></li></ul></div></span></div></header>
+  <div class="wrap">
+    <div class="card pausebar" id="pauseCard">
+      <div><strong id="pauseTitle"></strong><div class="m" id="pauseSub"></div></div>
+      <button id="pauseBtn"></button>
+    </div>
+    <div class="card" id="msgCard" hidden>
+      <label for="pmsg"><strong>Message customers see while paused</strong></label>
+      <textarea id="pmsg" rows="2" style="width:100%;margin-top:6px"></textarea>
+    </div>
+    <div class="tiles" id="tiles"></div>
+    <div class="tabs">
+      <button id="tabO" class="on">Orders</button>
+      <button id="tabM">Menu and prices</button>
+    </div>
+
+    <div id="orders"></div>
+
+    <div id="menuPane" hidden>
+      <div class="card">
+        <strong>Add an item</strong>
+        <div class="grid" style="margin-top:8px">
+          <input id="nc" type="text" placeholder="Category (e.g. Ready-made)" list="cats">
+          <input id="ni" type="text" placeholder="Item (e.g. Coke)">
+          <input id="nv" type="text" placeholder="Size or kind (optional)">
+          <input id="np" type="number" min="0" placeholder="Price ₹">
+        </div>
+        <datalist id="cats"></datalist>
+        <button id="addBtn" style="margin-top:8px">Add item</button>
+        <span class="err" id="addErr"></span>
+      </div>
+      <div class="card" style="overflow-x:auto">
+        <div class="m" style="margin-bottom:6px">Items with price 0 or switched off are hidden from customers.</div>
+        <table id="mt"></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var esc = function(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); };
+  function waUrl(n){ return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'https://wa.me/'+n : 'https://web.whatsapp.com/send?phone='+n; }
+  var PW = localStorage.getItem('sapraPw') || sessionStorage.getItem('sapraPw') || '';
+  var USER = localStorage.getItem('sapraUser') || sessionStorage.getItem('sapraUser') || '';
+  var ts = Number(localStorage.getItem('sapraTs') || 0);
+  if(PW && ts && Date.now() - ts > 12*3600*1000){ PW=''; USER=''; localStorage.removeItem('sapraPw'); localStorage.removeItem('sapraUser'); sessionStorage.removeItem('sapraPw'); sessionStorage.removeItem('sapraUser'); }
+  var accepting = true, timer = null, lastNew = -1;
+  var OS = ['New','Preparing','Ready','Collected','Cancelled'];
+  var PS = ['Pay at shop','Paid (cash)','Paid (online)'];
+
+  function api(path, body){
+    var o = {headers:{'x-admin-password':PW,'x-admin-user':USER}};
+    if(body){ o.method='POST'; o.headers['content-type']='application/json'; o.body=JSON.stringify(body); }
+    return fetch(path,o).then(function(r){
+      if(r.status===401){ logout(); throw new Error('auth'); }
+      if(r.status===429){ return r.json().then(function(j){ var e=new Error('locked'); e.msg=j.message; throw e; }); }
+      return r.json();
+    });
+  }
+
+  function logout(){ PW=''; USER=''; localStorage.removeItem('sapraUser'); sessionStorage.removeItem('sapraUser'); localStorage.removeItem('sapraPw'); localStorage.removeItem('sapraTs'); sessionStorage.removeItem('sapraPw'); clearInterval(timer); $('app').hidden=true; $('login').hidden=false; }
+  $('logout').onclick = logout;
+  var pin = '', busy = false;
+  function paint(){ var d = document.querySelectorAll('#dots i'); for(var k=0;k<d.length;k++) d[k].className = k<pin.length ? 'on' : ''; }
+  function press(ch){
+    if(busy) return;
+    $('loginErr').textContent = '';
+    if(ch==='del') pin = pin.slice(0,-1);
+    else if(ch==='clr') pin = '';
+    else if(!$('uname').value.trim()){ $('loginErr').textContent = 'Please enter your username first.'; $('uname').focus(); return; }
+    else if(pin.length < 4) pin += ch;
+    paint();
+    if(pin.length === 4) submitPin();
+  }
+  function submitPin(){
+    busy = true; PW = pin; USER = $('uname').value.trim().toLowerCase();
+    api('/api/admin/orders').then(function(d){
+      (($('keep').checked) ? localStorage : sessionStorage).setItem('sapraPw', PW);
+      (($('keep').checked) ? localStorage : sessionStorage).setItem('sapraUser', USER);
+      localStorage.setItem('sapraTs', String(Date.now()));
+      pin = ''; paint(); start(d);
+    }).catch(function(e){
+      PW = ''; USER = ''; pin = ''; paint();
+      var box = $('pinBox'); box.classList.remove('shake'); void box.offsetWidth; box.classList.add('shake');
+      if(e.message==='auth') $('loginErr').textContent = 'Wrong username or PIN. Please try again.';
+      else if(e.message==='locked') $('loginErr').textContent = e.msg || 'Too many attempts. Please wait 10 minutes.';
+      else $('loginErr').textContent = 'Could not connect. Check your internet and try again.';
+    }).then(function(){ busy = false; });
+  }
+  $('keys').addEventListener('click', function(e){ var b = e.target.closest('button'); if(b) press(b.dataset.k); });
+  document.addEventListener('keydown', function(e){
+    if($('login').hidden || (e.target && e.target.id==='uname')) return;
+    if(/^[0-9]$/.test(e.key)) press(e.key);
+    else if(e.key==='Backspace') press('del');
+  });
+  if(PW){ api('/api/admin/orders').then(start).catch(function(){}); }
+
+  function start(d){
+    $('login').hidden=true; $('app').hidden=false;
+    render(d);
+    clearInterval(timer);
+    timer = setInterval(refresh, 20000);
+  }
+  function refresh(){ api('/api/admin/orders').then(render).catch(function(){}); }
+
+  function render(d){
+    accepting = d.accepting;
+    var today = new Date(Date.now()+5.5*3600e3).toISOString().slice(0,10);
+    var cnt = {New:0, Preparing:0, Ready:0}, sum = 0;
+    d.orders.forEach(function(o){ if(cnt[o.status]!==undefined) cnt[o.status]++; if(o.created_at.slice(0,10)===today && o.status!=='Cancelled') sum+=o.total; });
+    $('tiles').innerHTML = '<div class="tile">New<b>'+cnt.New+'</b></div><div class="tile">Preparing<b>'+cnt.Preparing+'</b></div><div class="tile">Ready<b>'+cnt.Ready+'</b></div><div class="tile">Today\'s total<b>₹'+sum+'</b></div>';
+    $('pauseCard').classList.toggle('off', !accepting);
+    $('pauseTitle').textContent = accepting ? 'Taking orders' : 'New orders are paused';
+    $('pauseSub').textContent = accepting ? 'Customers can order now.' : 'Customers see your pause message.';
+    $('pauseBtn').textContent = accepting ? 'Pause new orders' : 'Resume orders';
+    $('pauseBtn').className = accepting ? 'danger' : '';
+    $('msgCard').hidden = accepting;
+    if(!accepting && document.activeElement !== $('pmsg')) $('pmsg').value = d.pauseMessage || '';
+
+    var newCount = d.orders.filter(function(o){return o.status==='New';}).length;
+    document.title = (newCount ? '('+newCount+') ' : '') + 'SAPRA TEA STALL - Admin';
+    if(lastNew>=0 && newCount>lastNew){ try{ new Audio('data:audio/wav;base64,UklGRlQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YTAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA').play(); }catch(e){} }
+    lastNew = newCount;
+
+    $('orders').innerHTML = d.orders.length ? d.orders.map(function(o){
+      var t = o.created_at.replace('T',' ').slice(0,16);
+      return '<div class="card"><div class="oh"><span><span class="oid">'+esc(o.order_id)+'</span> <span class="tag'+(o.status==='New'?' new':'')+'">'+esc(o.status)+'</span></span><span class="m">'+esc(t)+'</span></div>'
+        + '<div>'+esc(o.items_text)+'</div>'
+        + '<div><strong>₹'+o.total+'</strong> · '+esc(o.method)+'</div>'
+        + '<div class="m">'+esc(o.name)+' · <a href="tel:'+esc(o.phone)+'">'+esc(o.phone)+'</a> · <a target="_blank" rel="noopener" href="'+waUrl('91'+o.phone)+'">WhatsApp</a></div>'
+        + (o.note?'<div class="m">Note: '+esc(o.note)+'</div>':'')
+        + '<div class="sel"><label class="m">Order <select data-oid="'+esc(o.order_id)+'" data-f="status">'+OS.map(function(s){return '<option'+(s===o.status?' selected':'')+'>'+s+'</option>';}).join('')+'</select></label>'
+        + '<label class="m">Payment <select data-oid="'+esc(o.order_id)+'" data-f="pay_status">'+PS.map(function(s){return '<option'+(s===o.pay_status?' selected':'')+'>'+s+'</option>';}).join('')+'</select></label></div></div>';
+    }).join('') : '<div class="card m">No orders yet. This page checks for new orders every 20 seconds.</div>';
+  }
+
+  $('orders').addEventListener('change', function(e){
+    var s = e.target.closest('select'); if(!s) return;
+    var body = {order_id:s.dataset.oid}; body[s.dataset.f] = s.value;
+    api('/api/admin/order', body).then(refresh);
+  });
+
+  $('pauseBtn').onclick = function(){
+    var body = {accepting: !accepting};
+    if(accepting){
+      if(!confirm('Pause new orders? Customers will not be able to order until you resume.')) return;
+    } else if($('pmsg').value.trim()){ /* keep edited message */ }
+    if(!accepting) body.message = $('pmsg').value;
+    api('/api/admin/accepting', body).then(refresh);
+  };
+  $('pmsg').addEventListener('change', function(){ api('/api/admin/accepting', {accepting:false, message:$('pmsg').value}); });
+
+  $('tabO').onclick = function(){ $('tabO').className='on'; $('tabM').className=''; $('orders').hidden=false; $('menuPane').hidden=true; };
+  $('tabM').onclick = function(){ $('tabM').className='on'; $('tabO').className=''; $('orders').hidden=true; $('menuPane').hidden=false; loadMenu(); };
+
+  function loadMenu(){
+    api('/api/admin/menu').then(function(d){
+      var cats = {}; d.menu.forEach(function(m){ cats[m.category]=1; });
+      $('cats').innerHTML = Object.keys(cats).map(function(c){return '<option value="'+esc(c)+'">';}).join('');
+      $('mt').innerHTML = '<tr><th>Category</th><th>Item</th><th>Kind / size</th><th>₹</th><th>On</th><th></th></tr>' + d.menu.map(function(m){
+        return '<tr data-id="'+m.id+'"><td><input type="text" data-k="category" value="'+esc(m.category)+'"></td>'
+          + '<td><input type="text" data-k="item" value="'+esc(m.item)+'"></td>'
+          + '<td><input type="text" data-k="variant" value="'+esc(m.variant)+'"></td>'
+          + '<td><input class="p" type="number" min="0" data-k="price" value="'+m.price+'"></td>'
+          + '<td><input type="checkbox" data-k="available"'+(m.available?' checked':'')+'></td>'
+          + '<td style="white-space:nowrap"><button data-save="'+m.id+'">Save</button> <button class="danger" data-del="'+m.id+'">Delete</button></td></tr>';
+      }).join('');
+    });
+  }
+  function rowData(tr){
+    var o = {id:Number(tr.dataset.id)};
+    tr.querySelectorAll('[data-k]').forEach(function(i){ o[i.dataset.k] = i.type==='checkbox' ? i.checked : i.value; });
+    return o;
+  }
+  $('mt').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    var tr = b.closest('tr');
+    if(b.dataset.save){
+      b.textContent='Saving…';
+      api('/api/admin/menu', rowData(tr)).then(function(r){ b.textContent = r.ok ? 'Saved' : 'Error'; setTimeout(function(){b.textContent='Save';},1200); });
+    } else if(b.dataset.del){
+      if(confirm('Delete this item for good?')) api('/api/admin/menu', {id:Number(b.dataset.del), delete:true}).then(loadMenu);
+    }
+  });
+  $('addBtn').onclick = function(){
+    $('addErr').textContent='';
+    api('/api/admin/menu', {category:$('nc').value, item:$('ni').value, variant:$('nv').value, price:$('np').value, available:true}).then(function(r){
+      if(!r.ok){ $('addErr').textContent=r.message; return; }
+      ['ni','nv','np'].forEach(function(i){ $(i).value=''; }); loadMenu();
+    });
+  };
+})();
+</script>
+<script>
+(function(){
+  [['kebab','kebabBtn','kebabList'],['kebab2','kebabBtn2','kebabList2']].forEach(function(ids){
+    var box=document.getElementById(ids[0]), btn=document.getElementById(ids[1]), list=document.getElementById(ids[2]);
+    if(!box) return;
+    function setOpen(o){ list.hidden=!o; btn.setAttribute('aria-expanded',o?'true':'false'); }
+    btn.addEventListener('click',function(e){ e.stopPropagation(); setOpen(list.hidden); });
+    document.addEventListener('click',function(e){ if(!box.contains(e.target)) setOpen(false); });
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ setOpen(false); btn.focus(); } });
+    list.addEventListener('click',function(e){ if(e.target.closest('a')) setOpen(false); });
+  });
+})();
+</script>
+</body>
+</html>
