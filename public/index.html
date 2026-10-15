@@ -81,6 +81,7 @@ header{background:linear-gradient(135deg,#0b2a20,#103c2c 60%,#1b5b43)}
 .sent{background:#e7f6ec;border:1px solid #9fd5b1;border-radius:12px;padding:14px;margin-top:10px}
 .sendwa{display:inline-flex;align-items:center;gap:8px;margin-top:8px;padding:12px 18px;border-radius:99px;background:#25a244;color:#fff;font-weight:bold;text-decoration:none}
 .hours{font-weight:bold}
+.owner{font-size:1.05rem;margin:10px 0}
 .product.added{border-color:#138353;box-shadow:0 0 0 2px rgba(19,131,83,.18)}
 .addedtag{font-size:12px;font-weight:bold;color:#138353;margin-top:2px}
 .stepper{display:inline-flex;align-items:center;border:2px solid #138353;border-radius:10px;overflow:hidden;flex:none}
@@ -137,6 +138,7 @@ header{background:linear-gradient(135deg,#0b2a20,#103c2c 60%,#1b5b43)}
 <footer id="contact">
   <h2>Find us</h2>
   <p>WZ-18, Phool Bagh, Ashok Park Main, Rohtak Road, New Delhi 110026<br>Under Ashok Park Main Metro Station</p>
+  <p class="owner" id="ownerBox" hidden><strong>Owner:</strong> <span id="ownerName"></span> · <a id="ownerCall" href="#"></a></p>
   <p class="hours"><span class="badge open" id="openNow2"><span class="dot"></span>Open · Daily 12 PM – 12 AM</span></p>
   <div class="actions" style="justify-content:center"><a class="btn call" href="tel:7011875286">📞 7011875286</a><a class="btn wa" href="https://wa.me/917011875286?text=Hi%20SAPRA%20TEA%20STALL%2C%20I%20would%20like%20to%20order" target="_blank" rel="noopener">💬 WhatsApp</a><a class="btn" href="https://www.google.com/maps/dir/?api=1&amp;destination=SAPRA%20TEA%20STALL%2C%20WZ-18%2C%20Phool%20Bagh%2C%20Ashok%20Park%20Main%2C%20Rohtak%20Road%2C%20New%20Delhi%20110026" target="_blank" rel="noopener">📍 Get directions</a></div>
   <iframe class="map" title="Map to SAPRA TEA STALL" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=SAPRA%20TEA%20STALL%2C%20WZ-18%2C%20Phool%20Bagh%2C%20Ashok%20Park%20Main%2C%20New%20Delhi%20110026&amp;output=embed"></iframe>
@@ -286,6 +288,15 @@ header{background:linear-gradient(135deg,#0b2a20,#103c2c 60%,#1b5b43)}
     }
   });
 
+  // ---- OWNER DETAILS ----
+  const OWNER = { name: 'Harish Kumar', phone: '7011875286' };
+  if(OWNER.name){
+    $('ownerName').textContent = OWNER.name;
+    $('ownerCall').textContent = OWNER.phone;
+    $('ownerCall').href = 'tel:' + OWNER.phone;
+    $('ownerBox').hidden = false;
+  }
+
   loadMenu();
 
   (function(){ // open / closed badge (stall hours 12 PM - 12 AM, India time)
@@ -307,8 +318,4 @@ header{background:linear-gradient(135deg,#0b2a20,#103c2c 60%,#1b5b43)}
   btn.addEventListener('click',function(e){ e.stopPropagation(); setOpen(list.hidden); });
   document.addEventListener('click',function(e){ if(!box.contains(e.target)) setOpen(false); });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ setOpen(false); btn.focus(); } });
-  list.addEventListener('click',function(e){ if(e.target.closest('a')) setOpen(false); });
-})();
-</script>
-</body>
-</html>
+  list.addEventListene
