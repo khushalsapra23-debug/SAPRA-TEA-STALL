@@ -89,16 +89,17 @@ async function nextOrderId(env) {
 // ADMIN_PASSWORD, if set, also works as a PIN.
 function parseStaff(env) {
   const m = new Map(); // pin -> label
-  if (env.ADMIN_PASSWORD) m.set(String(env.ADMIN_PASSWORD).trim(), 'admin');
-  for (const part of String(env.STAFF_LOGINS || '').split(',')) {
-    const t = part.trim();
-    if (!t) continue;
-    const i = t.lastIndexOf(':');
-    const pin = (i < 0 ? t : t.slice(i + 1)).trim();
-    const label = i < 0 ? 'staff' : t.slice(0, i).trim() || 'staff';
+  if (env.ADMIN_PASSWORD) m.set(String(env.ADMIN_PASSWORD).replace(/["'\s]/g, ''), 'admin');
+  // Accepts commas, semicolons, spaces or new lines between entries, and ignores quotes.
+  for (const part of String(env.STAFF_LOGINS || '').replace(/["'\u201c\u201d\u2018\u2019]/g, '').split(/[,;\s]+/)) {
+    if (!part) continue;
+    const i = part.lastIndexOf(':');
+    const pin = (i < 0 ? part : part.slice(i + 1)).replace(/\D/g, '');
+    const label = i < 0 ? 'staff' : part.slice(0, i).trim() || 'staff';
     if (pin) m.set(pin, label);
   }
   return m;
+}
 }
 
 async function isAdmin(req, env) {
