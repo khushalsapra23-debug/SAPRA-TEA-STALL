@@ -82,12 +82,12 @@ async function nextOrderId(env) {
 }
 
 async function isAdmin(req, env) {
-  if (!env.ADMIN_PASSWORD) return false;
+  if (!env.STAFF_PASSWORD) return false;
   const given = req.headers.get('x-admin-password') || '';
   const enc = new TextEncoder();
   const [a, b] = await Promise.all([
     crypto.subtle.digest('SHA-256', enc.encode(given)),
-    crypto.subtle.digest('SHA-256', enc.encode(env.ADMIN_PASSWORD))
+    crypto.subtle.digest('SHA-256', enc.encode(env.STAFF_PASSWORD))
   ]);
   const x = new Uint8Array(a), y = new Uint8Array(b);
   let diff = 0;
