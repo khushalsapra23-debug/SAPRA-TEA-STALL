@@ -162,7 +162,7 @@
     if(body){ o.method='POST'; o.headers['content-type']='application/json'; o.body=JSON.stringify(body); }
     return fetch(path,o).then(function(r){
       if(r.status===401){ logout(); throw new Error('auth'); }
-      if(r.status===429){ return r.json().then(function(j){ var e=new Error('locked'); e.msg=j.message; throw e; }); }
+      if(r.status===429||r.status===503){ return r.json().then(function(j){ var e=new Error('locked'); e.msg=j.message; throw e; }); }
       return r.json();
     });
   }
