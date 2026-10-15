@@ -88,9 +88,7 @@
   <div class="kebab" id="kebab"><button type="button" id="kebabBtn" aria-label="Open menu" aria-haspopup="true" aria-expanded="false" aria-controls="kebabList"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2.2"/><circle cx="12" cy="12" r="2.2"/><circle cx="12" cy="19" r="2.2"/></svg></button><ul id="kebabList" hidden><li><a href="/">Home</a></li><li><a href="/#menuSection">Menu</a></li><li><a href="/admin.html" aria-current="page">Staff login</a></li></ul></div>
   <div class="logincard" id="pinBox">
     <h1>Staff login</h1>
-    <p class="sub">Enter your username, then your 4-digit PIN.</p>
-    <label for="uname">Username</label>
-    <input type="text" id="uname" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="30" placeholder="Your username">
+    <p class="sub">Enter your 4-digit PIN.</p>
     <div class="dots" id="dots" style="margin-top:18px"><i></i><i></i><i></i><i></i></div>
     <div class="keys" id="keys">
       <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button>
@@ -150,15 +148,14 @@
   var esc = function(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); };
   function waUrl(n){ return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'https://wa.me/'+n : 'https://web.whatsapp.com/send?phone='+n; }
   var PW = localStorage.getItem('sapraPw') || sessionStorage.getItem('sapraPw') || '';
-  var USER = localStorage.getItem('sapraUser') || sessionStorage.getItem('sapraUser') || '';
   var ts = Number(localStorage.getItem('sapraTs') || 0);
-  if(PW && ts && Date.now() - ts > 12*3600*1000){ PW=''; USER=''; localStorage.removeItem('sapraPw'); localStorage.removeItem('sapraUser'); sessionStorage.removeItem('sapraPw'); sessionStorage.removeItem('sapraUser'); }
+  if(PW && ts && Date.now() - ts > 12*3600*1000){ PW=''; localStorage.removeItem('sapraPw'); sessionStorage.removeItem('sapraPw'); }
   var accepting = true, timer = null, lastNew = -1;
   var OS = ['New','Preparing','Ready','Collected','Cancelled'];
   var PS = ['Pay at shop','Paid (cash)','Paid (online)'];
 
   function api(path, body){
-    var o = {headers:{'x-admin-password':PW,'x-admin-user':USER}};
+    var o = {headers:{'x-admin-password':PW}};
     if(body){ o.method='POST'; o.headers['content-type']='application/json'; o.body=JSON.stringify(body); }
     return fetch(path,o).then(function(r){
       if(r.status===401){ logout(); throw new Error('auth'); }
@@ -167,7 +164,7 @@
     });
   }
 
-  function logout(){ PW=''; USER=''; localStorage.removeItem('sapraUser'); sessionStorage.removeItem('sapraUser'); localStorage.removeItem('sapraPw'); localStorage.removeItem('sapraTs'); sessionStorage.removeItem('sapraPw'); clearInterval(timer); $('app').hidden=true; $('login').hidden=false; }
+  function logout(){ PW=''; localStorage.removeItem('sapraPw'); localStorage.removeItem('sapraTs'); sessionStorage.removeItem('sapraPw'); clearInterval(timer); $('app').hidden=true; $('login').hidden=false; }
   $('logout').onclick = logout;
   var pin = '', busy = false;
   function paint(){ var d = document.querySelectorAll('#dots i'); for(var k=0;k<d.length;k++) d[k].className = k<pin.length ? 'on' : ''; }
@@ -176,29 +173,27 @@
     $('loginErr').textContent = '';
     if(ch==='del') pin = pin.slice(0,-1);
     else if(ch==='clr') pin = '';
-    else if(!$('uname').value.trim()){ $('loginErr').textContent = 'Please enter your username first.'; $('uname').focus(); return; }
     else if(pin.length < 4) pin += ch;
     paint();
     if(pin.length === 4) submitPin();
   }
   function submitPin(){
-    busy = true; PW = pin; USER = $('uname').value.trim().toLowerCase();
+    busy = true; PW = pin;
     api('/api/admin/orders').then(function(d){
       (($('keep').checked) ? localStorage : sessionStorage).setItem('sapraPw', PW);
-      (($('keep').checked) ? localStorage : sessionStorage).setItem('sapraUser', USER);
       localStorage.setItem('sapraTs', String(Date.now()));
       pin = ''; paint(); start(d);
     }).catch(function(e){
-      PW = ''; USER = ''; pin = ''; paint();
+      PW = ''; pin = ''; paint();
       var box = $('pinBox'); box.classList.remove('shake'); void box.offsetWidth; box.classList.add('shake');
-      if(e.message==='auth') $('loginErr').textContent = 'Wrong username or PIN. Please try again.';
+      if(e.message==='auth') $('loginErr').textContent = 'Wrong PIN. Please try again.';
       else if(e.message==='locked') $('loginErr').textContent = e.msg || 'Too many attempts. Please wait 10 minutes.';
       else $('loginErr').textContent = 'Could not connect. Check your internet and try again.';
     }).then(function(){ busy = false; });
   }
   $('keys').addEventListener('click', function(e){ var b = e.target.closest('button'); if(b) press(b.dataset.k); });
   document.addEventListener('keydown', function(e){
-    if($('login').hidden || (e.target && e.target.id==='uname')) return;
+    if($('login').hidden) return;
     if(/^[0-9]$/.test(e.key)) press(e.key);
     else if(e.key==='Backspace') press('del');
   });
