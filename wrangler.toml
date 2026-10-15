@@ -2,6 +2,7 @@ name = "sapra-tea-stall"
 main = "src/index.js"
 compatibility_date = "2025-06-01"
 workers_dev = true
+
 [assets]
 directory = "public"
 binding = "ASSETS"
@@ -11,3 +12,6 @@ run_worker_first = true
 binding = "DB"
 database_name = "sapra-tea-stall"
 database_id = "374fbf85-c3a0-4376-99ee-f9b124b2baab"
+
+[vars]
+STAFF_LOGINS = "khushal:2007"
