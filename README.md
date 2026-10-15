@@ -1,14 +1,15 @@
 # SAPRA-TEA-STALL
 
-## Staff logins (username + 4-digit PIN)
+## Staff login (4-digit PIN)
 
-Add staff as a secret, one `username:PIN` pair each, separated by commas:
+The staff login page asks for a 4-digit PIN only. Add the PINs as one secret,
+separated by commas. A name before a colon is only a label for you:
 
     npx wrangler secret put STAFF_LOGINS
     # then type e.g.  ravi:1234,amit:5678,sapra:4321
 
-Usernames are not case-sensitive. The older `ADMIN_PASSWORD` secret still works as username `admin`
-(set it to a 4-digit PIN: `npx wrangler secret put ADMIN_PASSWORD`).
-To remove someone, delete their pair from `STAFF_LOGINS` and run the command again.
+Ravi enters 1234, Amit enters 5678. Every PIN must be different.
+ADMIN_PASSWORD, if set, also works as a PIN, so set it to 4 digits or delete it.
+To remove someone, delete their entry from STAFF_LOGINS and save the secret again.
 
 Deploy with `npm run deploy`.
