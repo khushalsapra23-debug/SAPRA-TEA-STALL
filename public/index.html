@@ -2,287 +2,283 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0b2a20">
-<title>SAPRA TEA STALL - Order for pickup</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b2a20'/%3E%3Cpath d='M24 19c-3-4 3-6 0-11M32 17c-3-4 3-6 0-12M40 19c-3-4 3-6 0-11' fill='none' stroke='%23f2a93b' stroke-width='2.5' stroke-linecap='round'/%3E%3Cpath d='M12 27h36v10a13 13 0 0 1-13 13H25A13 13 0 0 1 12 37z' fill='%23f5f8f6'/%3E%3Cpath d='M18 35h24' stroke='%230f9d63' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Staff login</title>
 <style>
-  :root{
-    --night:#0b2a20;      /* deep metro green-black */
-    --pine:#14503d;
-    --metro:#0f9d63;      /* Green Line */
-    --metro-ink:#0a6f46;
-    --amber:#f2a93b;      /* chai */
-    --amber-ink:#8a5a0c;
-    --paper:#f5f8f6;
-    --white:#ffffff;
-    --ink:#10231c;
-    --muted:#5b6c64;
-    --line:#dbe5df;
-    --alert:#b3321f;
-    --display:'Bricolage Grotesque','DM Sans',system-ui,sans-serif;
-    --body:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
-  }
+  :root{--ink:#17251f;--muted:#5c6b64;--line:#d8e3dc;--mist:#f1f6f3;--metro:#0a7d4f;--chai:#d9972b;--alert:#b3321f}
   *{box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{margin:0;font-family:var(--body);color:var(--ink);background:var(--paper);line-height:1.55;font-size:16px;padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
-  h1,h2,h3{font-family:var(--display);margin:0}
-  button,input,textarea{font:inherit;color:inherit}
-  a{color:inherit}
-  :focus-visible{outline:3px solid var(--amber);outline-offset:3px}
-  .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
-  .narrow{max-width:760px;margin:0 auto;padding:0 20px}
-
-  /* ---------- Hero ---------- */
-  .hero{background:var(--night);color:#fff;padding:calc(18px + env(safe-area-inset-top,0px)) 0 0;overflow:hidden;position:relative}
-  .topline{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-  .brand{display:block;line-height:0}
-  .logo{width:46px;height:46px;display:block}
-  .status{display:inline-flex;align-items:center;gap:8px;font-size:.9rem;font-weight:500;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:6px 14px}
-  .dot{width:9px;height:9px;border-radius:50%;background:#7a8a83}
-  .status.open .dot{background:#3ddc97;box-shadow:0 0 0 4px rgba(61,220,151,.22)}
-  .right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-  .switch{display:flex;width:max-content;max-width:100%;overflow-x:auto;margin-top:16px;scrollbar-width:none;background:rgba(255,255,255,.12);border-radius:999px;padding:3px}
-  .switch a{padding:6px 14px;border-radius:999px;text-decoration:none;font-size:.9rem;font-weight:600;color:#cfe3d9}
-  .switch a.on{background:#fff;color:var(--ink)}
-  .herogrid{display:grid;grid-template-columns:1.15fr .85fr;align-items:center;gap:20px;padding:44px 0 0}
-  .hero h1{font-weight:800;font-size:clamp(2.5rem,8.2vw,4.6rem);line-height:1;letter-spacing:-.025em;max-width:11ch}
-  .hero p.lead{font-size:1.1rem;color:#c5d8cf;max-width:34ch;margin:18px 0 26px}
-  .cta{display:flex;gap:12px;flex-wrap:wrap}
-  .btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:14px;padding:13px 22px;font-weight:600;cursor:pointer;background:var(--amber);color:#2a1b00;font-size:1rem;text-decoration:none;transition:transform .15s ease,background .15s ease}
-  .btn:hover{transform:translateY(-1px)}
-  .btn.green{background:var(--metro);color:#fff}
-  .btn.ghost{background:transparent;border:1.5px solid rgba(255,255,255,.4);color:#fff}
-  .btn.line{background:transparent;border:1.5px solid #b7c9bf;color:var(--ink)}
-  .btn[disabled]{opacity:.55;cursor:not-allowed;transform:none}
-  .cup{width:100%;max-width:340px;justify-self:center;display:block}
-  .steam path{fill:none;stroke:var(--amber);stroke-width:5;stroke-linecap:round;opacity:0;animation:rise 3.4s ease-in-out infinite}
-  .steam path:nth-child(2){animation-delay:.9s}
-  .steam path:nth-child(3){animation-delay:1.8s}
-  @keyframes rise{0%{opacity:0;transform:translateY(14px)}30%{opacity:.9}100%{opacity:0;transform:translateY(-16px)}}
-
-  /* station-board strip */
-  .board{display:flex;align-items:stretch;margin-top:44px;border-radius:16px 16px 0 0;overflow:hidden;background:#fff;color:var(--ink)}
-  .board .line-tag{background:var(--metro);color:#fff;font-family:var(--display);font-weight:800;padding:14px 18px;display:flex;align-items:center;font-size:.95rem}
-  .board .where{padding:12px 18px;flex:1}
-  .board .where strong{display:block;font-family:var(--display);font-size:1.15rem;line-height:1.2}
-  .board .where span{color:var(--muted);font-size:.9rem}
-
-  /* ---------- How it works ---------- */
-  .facts{display:flex;flex-wrap:wrap;gap:12px 36px;padding:22px 20px;font-size:.98rem;color:var(--muted)}
-  .facts b{color:var(--ink);font-weight:600}
-
-  .notice{border-radius:14px;padding:14px 16px;margin:0 0 16px;background:#fdf1d8;border:1px solid #ecc57a}
-  .paused{background:#fbe4df;border-color:#e3a398}
-
-  /* ---------- Menu ---------- */
-  .menuhead{padding-top:8px}
-  .menuhead h2{font-weight:800;font-size:clamp(1.9rem,6vw,2.6rem);letter-spacing:-.02em}
-  nav.cats{position:sticky;top:0;z-index:6;background:rgba(245,248,246,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:10px 0;border-bottom:1px solid var(--line);margin-top:14px}
-  nav.cats .narrow{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
-  nav.cats .narrow::-webkit-scrollbar{display:none}
-  .chip{white-space:nowrap;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:7px 16px;cursor:pointer;font-weight:500}
-  .chip.on{background:var(--night);color:#fff;border-color:var(--night)}
-
-  section.group{margin:34px 0 8px;scroll-margin-top:70px}
-  section.group h3{font-weight:800;font-size:1.5rem;letter-spacing:-.01em;margin-bottom:6px}
-  .item{display:flex;align-items:center;gap:10px;padding:14px 0;border-bottom:1px solid var(--line)}
-  .item .t{min-width:0}
-  .item .n{font-weight:600;font-size:1.05rem}
-  .v{color:var(--muted);font-size:.9rem}
-  .item .lead{flex:1;min-width:12px;border-bottom:2px dotted #b3c5bb;align-self:center;margin-top:4px}
-  .price{font-family:var(--display);font-weight:800;font-size:1.15rem;white-space:nowrap}
-  .stepper{display:flex;align-items:center;gap:8px;margin-left:6px}
-  .stepper button{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--metro);background:#fff;color:var(--metro-ink);font-size:1.3rem;line-height:1;cursor:pointer}
-  .stepper button.add{width:auto;border-radius:999px;padding:0 18px;background:var(--metro);color:#fff;font-weight:600;font-size:.98rem;border-color:var(--metro)}
-  .stepper .q{min-width:22px;text-align:center;font-weight:700}
-
-  /* ---------- Cart bar ---------- */
-  .bar{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:10;max-width:560px;margin:0 auto;background:var(--night);color:#fff;border-radius:20px;padding:10px 10px 10px 20px;box-shadow:0 12px 32px rgba(8,30,22,.35)}
-  .bar .in{display:flex;align-items:center;justify-content:space-between;gap:12px}
-  .bar strong{font-family:var(--display);font-size:1.05rem}
-  .bar .sub{color:#b9cfc5;font-size:.9rem;display:block;line-height:1.2}
-
-  /* ---------- Sheets ---------- */
-  .sheet{position:fixed;inset:0;background:rgba(6,22,16,.6);z-index:20;display:none;align-items:flex-end;justify-content:center}
-  .sheet.open{display:flex}
-  .panel{background:#fff;width:100%;max-width:640px;max-height:92vh;overflow:auto;border-radius:24px 24px 0 0;padding:22px 20px calc(26px + env(safe-area-inset-bottom,0px))}
-  .panel h2{font-weight:800;font-size:1.7rem;letter-spacing:-.015em;margin-bottom:10px}
-  .row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line)}
-  .row .nm{flex:1}
-  .row.total{font-weight:700;font-size:1.15rem;border-bottom:0;padding-top:14px}
-  label{display:block;font-weight:600;margin:16px 0 6px}
-  input[type=text],input[type=tel],textarea{width:100%;border:1.5px solid #c3d2c9;border-radius:12px;padding:12px 14px;background:#fff}
-  input:focus,textarea:focus{border-color:var(--metro);outline:0;box-shadow:0 0 0 4px rgba(15,157,99,.16)}
-  .pay{display:grid;gap:10px;margin-top:8px}
-  .pay label{display:flex;gap:12px;align-items:flex-start;font-weight:500;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;margin:0;cursor:pointer}
-  .pay label:has(input:checked){border-color:var(--metro);background:#effaf4}
-  .pay input{margin-top:5px;accent-color:var(--metro)}
-  .err{color:var(--alert);font-weight:600;min-height:1.4em;margin:12px 0 0}
-  .big{font-family:var(--display);font-size:2.3rem;font-weight:800;color:var(--metro-ink);letter-spacing:-.01em}
-  .actions{display:grid;gap:10px;margin-top:16px}
-  .panel .btn.ghost{color:var(--ink);border-color:#b7c9bf}
-
-  /* ---------- Footer ---------- */
-  footer{background:var(--night);color:#c5d8cf;margin-top:56px;padding:40px 0 calc(120px + env(safe-area-inset-bottom,0px))}
-  footer h2{color:#fff;font-weight:800;font-size:1.6rem;letter-spacing:-.01em;margin-bottom:12px}
-  footer .cols{display:grid;grid-template-columns:1.2fr 1fr;gap:28px}
-  footer p{margin:0 0 6px}
-  footer .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
-  footer .btn.ghost{color:#fff}
-  .brands{display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px;margin:6px 0 22px;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-  .brands .bt{color:var(--muted);font-size:.95rem;margin-right:6px}
-  .brands b{font-family:var(--display);font-weight:800;font-size:1.05rem;background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:5px 16px}
-  .fine{margin-top:28px;font-size:.88rem;color:#8fa89c}
-
-  @media (max-width:760px){
-    .herogrid{grid-template-columns:1fr;padding-top:30px;gap:6px}
-    .cup{max-width:230px;order:-1;justify-self:start;margin-left:-6px}
-    .hero h1{max-width:12ch}
-    footer .cols{grid-template-columns:1fr}
-  }
-  @media (prefers-reduced-motion:reduce){
-    html{scroll-behavior:auto}
-    .steam path{animation:none;opacity:.7}
-    .btn{transition:none}
-  }
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--mist);color:var(--ink);line-height:1.45}
+  .wrap{max-width:900px;margin:0 auto;padding:0 14px 40px}
+  header{background:var(--ink);color:#fff;padding:12px 0}
+  header .wrap{display:flex;justify-content:space-between;align-items:center;padding-bottom:0}
+  h1{font-size:1.1rem;margin:0}
+  button,input,select,textarea{font:inherit;color:inherit}
+  button{cursor:pointer;border:0;border-radius:8px;padding:9px 14px;font-weight:600;background:var(--metro);color:#fff}
+  button.ghost{background:#fff;border:1px solid #aebdb5;color:var(--ink)}
+  button.danger{background:var(--alert)}
+  input,select,textarea{border:1px solid #aebdb5;border-radius:8px;padding:8px 10px;background:#fff;max-width:100%}
+  .card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-top:12px}
+  .tabs{display:flex;gap:8px;margin-top:14px}
+  .tabs button{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  .tabs button.on{background:var(--ink);color:#fff}
+  .loginpage{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:#0b2a20}
+  .logincard{background:#fff;border-radius:20px;width:100%;max-width:400px;padding:28px 24px}
+  .logincard h1{font-size:1.7rem;margin:0 0 4px}
+  .logincard .sub{color:var(--muted);margin:0 0 18px}
+  .logincard label{display:block;font-weight:600;margin:12px 0 6px}
+  .logincard input[type=password],.logincard input[type=text]{width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid #c3d2c9}
+  .pwrow{position:relative}
+  .pwrow input{padding-right:76px!important}
+  .pwrow button{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:transparent;color:var(--metro);padding:6px 10px}
+  .chk{display:flex;align-items:flex-start;gap:8px;margin:14px 0;font-size:.92rem;font-weight:400!important}
+  .logincard .go{width:100%;padding:13px;font-size:1rem}
+  .sw{display:inline-flex;flex-wrap:wrap;background:#eaf2ed;border-radius:999px;padding:3px;margin-bottom:16px}
+  .sw a{padding:6px 14px;border-radius:999px;text-decoration:none;font-size:.9rem;font-weight:600;color:var(--muted)}
+  .sw a.on{background:var(--ink);color:#fff}
+  .hl{color:#fff;margin-right:14px;font-weight:600}
+  .dots{display:flex;justify-content:center;gap:14px;margin:6px 0 20px}
+  .dots i{width:15px;height:15px;border-radius:50%;border:2px solid #8aa89a;display:block}
+  .dots i.on{background:var(--ink);border-color:var(--ink)}
+  .keys{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .keys button{background:#f1f6f3;color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:16px 0;font-size:1.4rem;font-weight:600}
+  .keys button:active{background:#dfece5}
+  .keys button.small{font-size:.95rem}
+  .shake{animation:shake .35s}
+  @keyframes shake{20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+  @media (prefers-reduced-motion:reduce){.shake{animation:none}}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-top:12px}
+  .tile{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;color:var(--muted);font-size:.9rem}
+  .tile b{display:block;font-size:1.5rem;color:var(--ink)}
+  .err{color:var(--alert);font-weight:600;min-height:1.3em}
+  .pausebar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;border-left:6px solid var(--metro)}
+  .pausebar.off{border-left-color:var(--alert);background:#fbe4df}
+  .oh{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+  .oid{font-weight:800}
+  .m{color:var(--muted);font-size:.9rem}
+  .sel{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .tag{display:inline-block;border-radius:99px;padding:1px 10px;font-size:.8rem;font-weight:600;background:#e6efe9}
+  .tag.new{background:var(--chai);color:var(--ink)}
+  table{width:100%;border-collapse:collapse}
+  td,th{padding:5px 4px;text-align:left;vertical-align:middle;font-size:.92rem}
+  td input[type=text]{width:100%}
+  td input.p{width:70px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+  [hidden]{display:none!important}
 </style>
 </head>
 <body>
 
-<header class="hero" id="top">
+<div class="loginpage" id="login">
+  <div class="logincard" id="pinBox">
+    <nav class="sw" aria-label="Switch page"><a href="/">Home</a><a href="/#menuTop">Menu</a><a href="/#contact">Contact</a><a class="on" href="/admin.html" aria-current="page">Staff login</a></nav>
+    <h1>Staff login</h1>
+    <p class="sub">Enter your 6-digit PIN.</p>
+    <div class="dots" id="dots"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="keys" id="keys">
+      <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button>
+      <button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button>
+      <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button>
+      <button data-k="clr" class="small">Clear</button><button data-k="0">0</button><button data-k="del" aria-label="Delete last digit">&#9003;</button>
+    </div>
+    <label class="chk"><input type="checkbox" id="keep"><span>Stay signed in on this device. Use only on your own phone or computer.</span></label>
+    <p class="err" id="loginErr" role="alert"></p>
+    <p class="m">Signed out automatically after 12 hours.</p>
+  </div>
+</div>
+
+<div id="app" hidden>
+  <header><div class="wrap"><h1>Staff dashboard</h1><span><a class="hl" href="/">Home</a><button class="ghost" id="logout">Log out</button></span></div></header>
   <div class="wrap">
-    <div class="topline">
-      <a class="brand" href="/" aria-label="Sapra Tea Stall home">
-        <svg class="logo" viewBox="0 0 64 64" role="img" aria-label="Sapra Tea Stall logo">
-          <path d="M24 19c-3-4 3-6 0-11M32 17c-3-4 3-6 0-12M40 19c-3-4 3-6 0-11" fill="none" stroke="#f2a93b" stroke-width="2.5" stroke-linecap="round"/>
-          <path d="M12 27h36v10a13 13 0 0 1-13 13H25A13 13 0 0 1 12 37z" fill="#f5f8f6"/>
-          <path d="M48 30h3a6 6 0 0 1 0 12h-4" fill="none" stroke="#f5f8f6" stroke-width="3" stroke-linecap="round"/>
-          <path d="M18 35h24" stroke="#0f9d63" stroke-width="3" stroke-linecap="round"/>
-          <ellipse cx="30" cy="55" rx="23" ry="3.5" fill="#14503d"/>
-        </svg>
-      </a>
-      <div class="right">
-        <div class="status" id="status"><span class="dot"></span><span id="statusTxt">Checking hours</span></div>
-      </div>
+    <div class="card pausebar" id="pauseCard">
+      <div><strong id="pauseTitle"></strong><div class="m" id="pauseSub"></div></div>
+      <button id="pauseBtn"></button>
+    </div>
+    <div class="card" id="msgCard" hidden>
+      <label for="pmsg"><strong>Message customers see while paused</strong></label>
+      <textarea id="pmsg" rows="2" style="width:100%;margin-top:6px"></textarea>
+    </div>
+    <div class="tiles" id="tiles"></div>
+    <div class="tabs">
+      <button id="tabO" class="on">Orders</button>
+      <button id="tabM">Menu and prices</button>
     </div>
 
-    <nav class="switch" aria-label="Site pages">
-      <a class="on" href="#top">Home</a><a href="#menuTop">Menu</a><a href="#contact">Contact</a><a href="/admin.html">Staff login</a>
-    </nav>
+    <div id="orders"></div>
 
-    <div class="herogrid">
-      <div>
-        <h1>Hot chai, ready when you reach.</h1>
-        <p class="lead">Order tea, omelette and quick bites from your phone. Collect at the stall and pay at the shop.</p>
-        <div class="cta">
-          <a class="btn" href="#menuTop">Start your order</a>
-          <a class="btn ghost" id="callTop" href="#">Call the stall</a>
+    <div id="menuPane" hidden>
+      <div class="card">
+        <strong>Add an item</strong>
+        <div class="grid" style="margin-top:8px">
+          <input id="nc" type="text" placeholder="Category (e.g. Ready-made)" list="cats">
+          <input id="ni" type="text" placeholder="Item (e.g. Coke)">
+          <input id="nv" type="text" placeholder="Size or kind (optional)">
+          <input id="np" type="number" min="0" placeholder="Price ₹">
         </div>
+        <datalist id="cats"></datalist>
+        <button id="addBtn" style="margin-top:8px">Add item</button>
+        <span class="err" id="addErr"></span>
       </div>
-      <svg class="cup" viewBox="0 0 220 220" role="img" aria-label="A steaming cup of chai">
-        <g class="steam">
-          <path d="M85 82c-11-13 11-22 0-38"/>
-          <path d="M107 78c-11-13 11-23 0-40"/>
-          <path d="M129 82c-11-13 11-22 0-38"/>
-        </g>
-        <ellipse cx="105" cy="195" rx="82" ry="10" fill="#14503d"/>
-        <path d="M50 100H160V140A45 45 0 0 1 115 185H95A45 45 0 0 1 50 140Z" fill="#f5f8f6"/>
-        <path d="M160 114H171a20 20 0 0 1 0 40H156" fill="none" stroke="#f5f8f6" stroke-width="9" stroke-linecap="round"/>
-        <ellipse cx="105" cy="100" rx="55" ry="9" fill="#c98a2b"/>
-        <path d="M62 124h86" stroke="#0f9d63" stroke-width="6" stroke-linecap="round" opacity=".9"/>
-        <path d="M70 142h70" stroke="#f2a93b" stroke-width="6" stroke-linecap="round" opacity=".9"/>
-      </svg>
-    </div>
-
-    <div class="board">
-      <div class="line-tag">Green Line</div>
-      <div class="where"><strong>Under Ashok Park Main Metro Station</strong><span id="addr">Phool Bagh, Rohtak Road, New Delhi</span></div>
-    </div>
-  </div>
-</header>
-
-<div class="narrow">
-  <div class="facts">
-    <span><b>Pickup only.</b> No delivery.</span>
-    <span><b>Pay at the shop</b> by cash or online (UPI).</span>
-    <span id="hours"><b>Open</b> daily, 12 PM to 12 AM</span>
-    <span><b>Owner:</b> Harish Kumar</span>
-  </div>
-  <div class="brands"><span class="bt">Products direct from</span><b>Pepsi</b><b>Amul</b><b>Havmor</b></div>
-  <div id="pausedBox" class="notice paused" hidden role="alert"></div>
-</div>
-
-<main>
-  <div class="narrow menuhead" id="menuTop"><h2>Menu</h2></div>
-  <nav class="cats" aria-label="Menu categories"><div class="narrow" id="chips"></div></nav>
-  <div class="narrow" id="menu"><p>Loading menu…</p></div>
-</main>
-
-<footer id="contact">
-  <div class="wrap">
-    <div class="cols">
-      <div>
-        <h2>Find us</h2>
-        <p id="addr2"></p>
-        <p>Under Ashok Park Main Metro Station</p>
-        <p>Owner: Harish Kumar</p>
-        <p id="hours2"></p>
-      </div>
-      <div>
-        <h2>Contact us</h2>
-        <p>Call or WhatsApp the stall on <strong id="phoneTxt" style="color:#fff"></strong>.</p>
-        <div class="btns">
-          <a class="btn ghost" id="callBtm" href="#">Call</a>
-          <a class="btn ghost" id="waBtm" href="#" target="_blank" rel="noopener">WhatsApp</a>
-          <a class="btn ghost" id="dirBtm" href="#" target="_blank" rel="noopener">Directions</a>
-        </div>
+      <div class="card" style="overflow-x:auto">
+        <div class="m" style="margin-bottom:6px">Items with price 0 or switched off are hidden from customers.</div>
+        <table id="mt"></table>
       </div>
     </div>
-    <p class="fine">Pickup only. Pay at the shop when you collect.</p>
   </div>
-</footer>
-
-<div class="bar" id="bar" hidden>
-  <div class="in">
-    <div><strong id="barCount"></strong><span class="sub" id="barTotal"></span></div>
-    <button class="btn" id="openCart">View order</button>
-  </div>
-</div>
-
-<div class="sheet" id="cartSheet" role="dialog" aria-modal="true" aria-label="Your order">
-  <div class="panel">
-    <h2>Your order</h2>
-    <div id="cartLines"></div>
-    <label for="cname">Your name</label>
-    <input id="cname" type="text" autocomplete="name" maxlength="60">
-    <label for="cphone">Mobile number</label>
-    <input id="cphone" type="tel" inputmode="numeric" autocomplete="tel" maxlength="14" placeholder="10-digit number">
-    <label for="cnote">Note for the stall (optional)</label>
-    <textarea id="cnote" rows="2" maxlength="140" placeholder="For example: less sugar in the tea"></textarea>
-    <label style="margin-bottom:0">How will you pay at the shop?</label>
-    <div class="pay">
-      <label><input type="radio" name="pm" value="UPI" checked><span><strong>Online (UPI) at the shop</strong><br><span class="v">Pay online by UPI when you collect.</span></span></label>
-      <label><input type="radio" name="pm" value="Cash"><span><strong>Cash at the shop</strong><br><span class="v">Pay cash when you collect.</span></span></label>
-    </div>
-    <div class="notice" style="margin:16px 0 0">Pay at the shop when you collect. Collect from the stall under Ashok Park Main Metro Station and show your order ID.</div>
-    <p class="err" id="cartErr" role="alert"></p>
-    <div class="actions">
-      <button class="btn green" id="placeBtn">Place order</button>
-      <button class="btn line" id="closeCart">Keep browsing</button>
-    </div>
-  </div>
-</div>
-
-<div class="sheet" id="doneSheet" role="dialog" aria-modal="true" aria-label="Order placed">
-  <div class="panel" id="donePanel"></div>
 </div>
 
 <script>
 (function(){
-  var S = { data:null, cart:{}, order:null };
   var $ = function(id){ return document.getElementById(id); };
-  var esc = function(s){ return String(s).replace(/[&<
+  var esc = function(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); };
+  function waUrl(n){ return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'https://wa.me/'+n : 'https://web.whatsapp.com/send?phone='+n; }
+  var PW = localStorage.getItem('sapraPw') || sessionStorage.getItem('sapraPw') || '';
+  var ts = Number(localStorage.getItem('sapraTs') || 0);
+  if(PW && ts && Date.now() - ts > 12*3600*1000){ PW=''; localStorage.removeItem('sapraPw'); sessionStorage.removeItem('sapraPw'); }
+  var accepting = true, timer = null, lastNew = -1;
+  var OS = ['New','Preparing','Ready','Collected','Cancelled'];
+  var PS = ['Pay at shop','Paid (cash)','Paid (online)'];
+
+  function api(path, body){
+    var o = {headers:{'x-admin-password':PW}};
+    if(body){ o.method='POST'; o.headers['content-type']='application/json'; o.body=JSON.stringify(body); }
+    return fetch(path,o).then(function(r){
+      if(r.status===401){ logout(); throw new Error('auth'); }
+      if(r.status===429){ return r.json().then(function(j){ var e=new Error('locked'); e.msg=j.message; throw e; }); }
+      return r.json();
+    });
+  }
+
+  function logout(){ PW=''; localStorage.removeItem('sapraPw'); localStorage.removeItem('sapraTs'); sessionStorage.removeItem('sapraPw'); clearInterval(timer); $('app').hidden=true; $('login').hidden=false; }
+  $('logout').onclick = logout;
+  var pin = '', busy = false;
+  function paint(){ var d = document.querySelectorAll('#dots i'); for(var k=0;k<d.length;k++) d[k].className = k<pin.length ? 'on' : ''; }
+  function press(ch){
+    if(busy) return;
+    $('loginErr').textContent = '';
+    if(ch==='del') pin = pin.slice(0,-1);
+    else if(ch==='clr') pin = '';
+    else if(pin.length < 6) pin += ch;
+    paint();
+    if(pin.length === 6) submitPin();
+  }
+  function submitPin(){
+    busy = true; PW = pin;
+    api('/api/admin/orders').then(function(d){
+      (($('keep').checked) ? localStorage : sessionStorage).setItem('sapraPw', PW);
+      localStorage.setItem('sapraTs', String(Date.now()));
+      pin = ''; paint(); start(d);
+    }).catch(function(e){
+      PW = ''; pin = ''; paint();
+      var box = $('pinBox'); box.classList.remove('shake'); void box.offsetWidth; box.classList.add('shake');
+      if(e.message==='auth') $('loginErr').textContent = 'Wrong PIN. Please try again.';
+      else if(e.message==='locked') $('loginErr').textContent = e.msg || 'Too many attempts. Please wait 10 minutes.';
+      else $('loginErr').textContent = 'Could not connect. Check your internet and try again.';
+    }).then(function(){ busy = false; });
+  }
+  $('keys').addEventListener('click', function(e){ var b = e.target.closest('button'); if(b) press(b.dataset.k); });
+  document.addEventListener('keydown', function(e){
+    if($('login').hidden) return;
+    if(/^[0-9]$/.test(e.key)) press(e.key);
+    else if(e.key==='Backspace') press('del');
+  });
+  if(PW){ api('/api/admin/orders').then(start).catch(function(){}); }
+
+  function start(d){
+    $('login').hidden=true; $('app').hidden=false;
+    render(d);
+    clearInterval(timer);
+    timer = setInterval(refresh, 20000);
+  }
+  function refresh(){ api('/api/admin/orders').then(render).catch(function(){}); }
+
+  function render(d){
+    accepting = d.accepting;
+    var today = new Date(Date.now()+5.5*3600e3).toISOString().slice(0,10);
+    var cnt = {New:0, Preparing:0, Ready:0}, sum = 0;
+    d.orders.forEach(function(o){ if(cnt[o.status]!==undefined) cnt[o.status]++; if(o.created_at.slice(0,10)===today && o.status!=='Cancelled') sum+=o.total; });
+    $('tiles').innerHTML = '<div class="tile">New<b>'+cnt.New+'</b></div><div class="tile">Preparing<b>'+cnt.Preparing+'</b></div><div class="tile">Ready<b>'+cnt.Ready+'</b></div><div class="tile">Today\'s total<b>₹'+sum+'</b></div>';
+    $('pauseCard').classList.toggle('off', !accepting);
+    $('pauseTitle').textContent = accepting ? 'Taking orders' : 'New orders are paused';
+    $('pauseSub').textContent = accepting ? 'Customers can order now.' : 'Customers see your pause message.';
+    $('pauseBtn').textContent = accepting ? 'Pause new orders' : 'Resume orders';
+    $('pauseBtn').className = accepting ? 'danger' : '';
+    $('msgCard').hidden = accepting;
+    if(!accepting && document.activeElement !== $('pmsg')) $('pmsg').value = d.pauseMessage || '';
+
+    var newCount = d.orders.filter(function(o){return o.status==='New';}).length;
+    document.title = (newCount ? '('+newCount+') ' : '') + 'SAPRA TEA STALL - Admin';
+    if(lastNew>=0 && newCount>lastNew){ try{ new Audio('data:audio/wav;base64,UklGRlQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YTAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA').play(); }catch(e){} }
+    lastNew = newCount;
+
+    $('orders').innerHTML = d.orders.length ? d.orders.map(function(o){
+      var t = o.created_at.replace('T',' ').slice(0,16);
+      return '<div class="card"><div class="oh"><span><span class="oid">'+esc(o.order_id)+'</span> <span class="tag'+(o.status==='New'?' new':'')+'">'+esc(o.status)+'</span></span><span class="m">'+esc(t)+'</span></div>'
+        + '<div>'+esc(o.items_text)+'</div>'
+        + '<div><strong>₹'+o.total+'</strong> · '+esc(o.method)+'</div>'
+        + '<div class="m">'+esc(o.name)+' · <a href="tel:'+esc(o.phone)+'">'+esc(o.phone)+'</a> · <a target="_blank" rel="noopener" href="'+waUrl('91'+o.phone)+'">WhatsApp</a></div>'
+        + (o.note?'<div class="m">Note: '+esc(o.note)+'</div>':'')
+        + '<div class="sel"><label class="m">Order <select data-oid="'+esc(o.order_id)+'" data-f="status">'+OS.map(function(s){return '<option'+(s===o.status?' selected':'')+'>'+s+'</option>';}).join('')+'</select></label>'
+        + '<label class="m">Payment <select data-oid="'+esc(o.order_id)+'" data-f="pay_status">'+PS.map(function(s){return '<option'+(s===o.pay_status?' selected':'')+'>'+s+'</option>';}).join('')+'</select></label></div></div>';
+    }).join('') : '<div class="card m">No orders yet. This page checks for new orders every 20 seconds.</div>';
+  }
+
+  $('orders').addEventListener('change', function(e){
+    var s = e.target.closest('select'); if(!s) return;
+    var body = {order_id:s.dataset.oid}; body[s.dataset.f] = s.value;
+    api('/api/admin/order', body).then(refresh);
+  });
+
+  $('pauseBtn').onclick = function(){
+    var body = {accepting: !accepting};
+    if(accepting){
+      if(!confirm('Pause new orders? Customers will not be able to order until you resume.')) return;
+    } else if($('pmsg').value.trim()){ /* keep edited message */ }
+    if(!accepting) body.message = $('pmsg').value;
+    api('/api/admin/accepting', body).then(refresh);
+  };
+  $('pmsg').addEventListener('change', function(){ api('/api/admin/accepting', {accepting:false, message:$('pmsg').value}); });
+
+  $('tabO').onclick = function(){ $('tabO').className='on'; $('tabM').className=''; $('orders').hidden=false; $('menuPane').hidden=true; };
+  $('tabM').onclick = function(){ $('tabM').className='on'; $('tabO').className=''; $('orders').hidden=true; $('menuPane').hidden=false; loadMenu(); };
+
+  function loadMenu(){
+    api('/api/admin/menu').then(function(d){
+      var cats = {}; d.menu.forEach(function(m){ cats[m.category]=1; });
+      $('cats').innerHTML = Object.keys(cats).map(function(c){return '<option value="'+esc(c)+'">';}).join('');
+      $('mt').innerHTML = '<tr><th>Category</th><th>Item</th><th>Kind / size</th><th>₹</th><th>On</th><th></th></tr>' + d.menu.map(function(m){
+        return '<tr data-id="'+m.id+'"><td><input type="text" data-k="category" value="'+esc(m.category)+'"></td>'
+          + '<td><input type="text" data-k="item" value="'+esc(m.item)+'"></td>'
+          + '<td><input type="text" data-k="variant" value="'+esc(m.variant)+'"></td>'
+          + '<td><input class="p" type="number" min="0" data-k="price" value="'+m.price+'"></td>'
+          + '<td><input type="checkbox" data-k="available"'+(m.available?' checked':'')+'></td>'
+          + '<td style="white-space:nowrap"><button data-save="'+m.id+'">Save</button> <button class="danger" data-del="'+m.id+'">Delete</button></td></tr>';
+      }).join('');
+    });
+  }
+  function rowData(tr){
+    var o = {id:Number(tr.dataset.id)};
+    tr.querySelectorAll('[data-k]').forEach(function(i){ o[i.dataset.k] = i.type==='checkbox' ? i.checked : i.value; });
+    return o;
+  }
+  $('mt').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    var tr = b.closest('tr');
+    if(b.dataset.save){
+      b.textContent='Saving…';
+      api('/api/admin/menu', rowData(tr)).then(function(r){ b.textContent = r.ok ? 'Saved' : 'Error'; setTimeout(function(){b.textContent='Save';},1200); });
+    } else if(b.dataset.del){
+      if(confirm('Delete this item for good?')) api('/api/admin/menu', {id:Number(b.dataset.del), delete:true}).then(loadMenu);
+    }
+  });
+  $('addBtn').onclick = function(){
+    $('addErr').textContent='';
+    api('/api/admin/menu', {category:$('nc').value, item:$('ni').value, variant:$('nv').value, price:$('np').value, available:true}).then(function(r){
+      if(!r.ok){ $('addErr').textContent=r.message; return; }
+      ['ni','nv','np'].forEach(function(i){ $(i).value=''; }); loadMenu();
+    });
+  };
+})();
+</script>
+</body>
+</html>
