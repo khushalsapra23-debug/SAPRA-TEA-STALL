@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Staff login</title>
+<style>
+  :root{--ink:#17251f;--muted:#5c6b64;--line:#d8e3dc;--mist:#f1f6f3;--metro:#0a7d4f;--chai:#d9972b;--alert:#b3321f}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--mist);color:var(--ink);line-height:1.45}
+  .wrap{max-width:900px;margin:0 auto;padding:0 14px 40px}
+  header{background:var(--ink);color:#fff;padding:12px 0}
+  header .wrap{display:flex;justify-content:space-between;align-items:center;padding-bottom:0}
+  h1{font-size:1.1rem;margin:0}
+  button,input,select,textarea{font:inherit;color:inherit}
+  button{cursor:pointer;border:0;border-radius:8px;padding:9px 14px;font-weight:600;background:var(--metro);color:#fff}
+  button.ghost{background:#fff;border:1px solid #aebdb5;color:var(--ink)}
+  button.danger{background:var(--alert)}
+  input,select,textarea{border:1px solid #aebdb5;border-radius:8px;padding:8px 10px;background:#fff;max-width:100%}
+  .card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-top:12px}
+  .tabs{display:flex;gap:8px;margin-top:14px}
+  .tabs button{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  .tabs button.on{background:var(--ink);color:#fff}
+  .loginpage{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:#0b2a20}
+  .logincard{background:#fff;border-radius:20px;width:100%;max-width:400px;padding:28px 24px}
+  .logincard h1{font-size:1.7rem;margin:0 0 4px}
+  .logincard .sub{color:var(--muted);margin:0 0 18px}
+  .logincard label{display:block;font-weight:600;margin:12px 0 6px}
+  .logincard input[type=password],.logincard input[type=text]{width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid #c3d2c9}
+  .pwrow{position:relative}
+  .pwrow input{padding-right:76px!important}
+  .pwrow button{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:transparent;color:var(--metro);padding:6px 10px}
+  .chk{display:flex;align-items:flex-start;gap:8px;margin:14px 0;font-size:.92rem;font-weight:400!important}
+  .logincard .go{width:100%;padding:13px;font-size:1rem}
+  .sw{display:inline-flex;flex-wrap:wrap;background:#eaf2ed;border-radius:999px;padding:3px;margin-bottom:16px}
+  .sw a{padding:6px 14px;border-radius:999px;text-decoration:none;font-size:.9rem;font-weight:600;color:var(--muted)}
+  .sw a.on{background:var(--ink);color:#fff}
+  .hl{color:#fff;margin-right:14px;font-weight:600}
+  .dots{display:flex;justify-content:center;gap:14px;margin:6px 0 20px}
+  .dots i{width:15px;height:15px;border-radius:50%;border:2px solid #8aa89a;display:block}
+  .dots i.on{background:var(--ink);border-color:var(--ink)}
+  .keys{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .keys button{background:#f1f6f3;color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:16px 0;font-size:1.4rem;font-weight:600}
+  .keys button:active{background:#dfece5}
+  .keys button.small{font-size:.95rem}
+  .shake{animation:shake .35s}
+  @keyframes shake{20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+  @media (prefers-reduced-motion:reduce){.shake{animation:none}}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-top:12px}
+  .tile{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;color:var(--muted);font-size:.9rem}
+  .tile b{display:block;font-size:1.5rem;color:var(--ink)}
+  .err{color:var(--alert);font-weight:600;min-height:1.3em}
+  .pausebar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;border-left:6px solid var(--metro)}
+  .pausebar.off{border-left-color:var(--alert);background:#fbe4df}
+  .oh{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+  .oid{font-weight:800}
+  .m{color:var(--muted);font-size:.9rem}
+  .sel{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .tag{display:inline-block;border-radius:99px;padding:1px 10px;font-size:.8rem;font-weight:600;background:#e6efe9}
+  .tag.new{background:var(--chai);color:var(--ink)}
+  table{width:100%;border-collapse:collapse}
+  td,th{padding:5px 4px;text-align:left;vertical-align:middle;font-size:.92rem}
+  td input[type=text]{width:100%}
+  td input.p{width:70px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+  [hidden]{display:none!important}
+  .secs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+  .secs button{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;font-size:1.05rem;border-radius:12px;background:#fff;color:var(--ink);border:2px solid var(--line)}
+  .secs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .secs #secFest.on{background:#2b0f2a;border-color:#2b0f2a}
+  .secs b{display:inline-block;min-width:22px;padding:1px 7px;border-radius:99px;background:var(--chai);color:var(--ink);font-size:.8rem}
+  .secs b:empty{display:none}
+  .secnote{margin:12px 0 0;font-weight:700;color:var(--muted);font-size:.9rem}
+  .fcard{display:grid;grid-template-columns:110px 1fr;gap:12px}
+  .fcard .fimg img,.fcard .fimg .noimg,.fpre{width:110px;height:82px;object-fit:cover;border-radius:8px;background:#e6efe9;display:block}
+  .fcard .noimg{display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.8rem}
+  .fcard input[type=text],.fcard textarea{width:100%;margin-bottom:6px}
+  .frow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .fpre{margin-top:8px}
+
+.kebab{position:relative;flex:none}
+.kebab>button{width:44px;height:44px;border:0;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;display:flex;align-items:center;justify-content:center;padding:0}
+.kebab>button:hover,.kebab>button[aria-expanded="true"]{background:rgba(255,255,255,.28)}
+.kebab>button:focus-visible{outline:3px solid #ffd98a;outline-offset:2px}
+.kebab svg{width:22px;height:22px;fill:currentColor}
+.kebab ul{position:absolute;right:0;top:calc(100% + 8px);z-index:50;margin:0;padding:6px;list-style:none;min-width:170px;background:#fff;border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.25)}
+.kebab ul[hidden]{display:none}
+.kebab li a{display:block;padding:12px 14px;border-radius:8px;color:#17251f;text-decoration:none;font-weight:600}
+.kebab li a:hover,.kebab li a:focus-visible{background:#e6efe9;outline:none}
+.kebab li a[aria-current="page"]{background:#103c2c;color:#fff}
+  .loginpage{position:relative}
+  .loginpage .kebab{position:absolute;top:16px;right:16px}
+  header .kebab{margin-left:10px}
+  header .wrap>span{display:flex;align-items:center;gap:6px}
+</style>
+</head>
+<body>
+
+<div class="loginpage" id="login">
+  <div class="kebab" id="kebab"><button type="button" id="kebabBtn" aria-label="Open menu" aria-haspopup="true" aria-expanded="false" aria-controls="kebabList"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2.2"/><circle cx="12" cy="12" r="2.2"/><circle cx="12" cy="19" r="2.2"/></svg></button><ul id="kebabList" hidden><li><a href="/">Home</a></li><li><a href="/#menuSection">Menu</a></li><li><a href="/admin.html" aria-current="page">Staff login</a></li></ul></div>
+  <div class="logincard" id="pinBox">
+    <h1>Staff login</h1>
+    <p class="sub">Enter your 4-digit PIN.</p>
+    <div class="dots" id="dots" style="margin-top:18px"><i></i><i></i><i></i><i></i></div>
+    <div class="keys" id="keys">
+      <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button>
+      <button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button>
+      <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button>
+      <button data-k="clr" class="small">Clear</button><button data-k="0">0</button><button data-k="del" aria-label="Delete last digit">&#9003;</button>
+    </div>
+    <label class="chk"><input type="checkbox" id="keep"><span>Stay signed in on this device. Use only on your own phone or computer.</span></label>
+    <p class="err" id="loginErr" role="alert"></p>
+    <p class="m">Signed out automatically after 12 hours.</p>
+  </div>
+</div>
+
+<div id="app" hidden>
+  <header><div class="wrap"><h1>Staff dashboard</h1><span><button class="ghost" id="logout">Log out</button><div class="kebab" id="kebab2"><button type="button" id="kebabBtn2" aria-label="Open menu" aria-haspopup="true" aria-expanded="false" aria-controls="kebabList2"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2.2"/><circle cx="12" cy="12" r="2.2"/><circle cx="12" cy="19" r="2.2"/></svg></button><ul id="kebabList2" hidden><li><a href="/">Home</a></li><li><a href="/#menuSection">Menu</a></li><li><a href="/admin.html" aria-current="page">Staff login</a></li></ul></div></span></div></header>
+  <div class="wrap">
+    <div class="card pausebar" id="pauseCard">
+      <div><strong id="pauseTitle"></strong><div class="m" id="pauseSub"></div></div>
+      <button id="pauseBtn"></button>
+    </div>
+    <div class="card" id="msgCard" hidden>
+      <label for="pmsg"><strong>Message customers see while paused</strong></label>
+      <textarea id="pmsg" rows="2" style="width:100%;margin-top:6px"></textarea>
+    </div>
+    <div class="secs" role="tablist" aria-label="Sections">
+      <button id="secShop" class="on">Shop <b id="badgeShop"></b></button>
+      <button id="secFest">Festival <b id="badgeFest"></b></button>
+    </div>
+
+    <!-- ===== SHOP ===== -->
+    <div id="shopSec">
+      <div class="secnote">Shop: everyday menu, tea stall orders</div>
+      <div class="card pausebar" id="shopPauseCard">
+        <div><strong id="shopPauseTitle"></strong><div class="m" id="shopPauseSub"></div></div>
+        <button id="shopPauseBtn"></button>
+      </div>
+      <div class="card" id="shopSchedCard">
+        <strong>Auto pause by time</strong>
+        <div class="m">Pause shop orders by itself every day, and open them again at the time you set (India time).</div>
+        <div class="frow" style="margin-top:8px">
+          <label class="m"><input type="checkbox" id="shopSchedOn"> Use auto pause</label>
+          <label class="m">Pause at <input type="time" id="shopSchedFrom"></label>
+          <label class="m">Resume at <input type="time" id="shopSchedTo"></label>
+          <button id="shopSchedSave">Save</button>
+        </div>
+        <div class="m" id="shopSchedMsg" style="margin-top:6px"></div>
+      </div>
+      <div class="tabs">
+        <button id="sTabO" class="on">Orders</button>
+        <button id="sTabM">Menu list</button>
+      </div>
+      <div id="shopOrdersPane">
+        <div class="tiles" id="shopTiles"></div>
+        <div id="orders"></div>
+      </div>
+      <div id="menuPane" hidden>
+      <div class="card">
+        <strong>Add an item</strong>
+        <div class="grid" style="margin-top:8px">
+          <input id="nc" type="text" placeholder="Category (e.g. Ready-made)" list="cats">
+          <input id="ni" type="text" placeholder="Item (e.g. Coke)">
+          <input id="nv" type="text" placeholder="Size or kind (optional)">
+          <input id="np" type="number" min="0" placeholder="Price ₹">
+        </div>
+        <datalist id="cats"></datalist>
+        <button id="addBtn" style="margin-top:8px">Add item</button>
+        <span class="err" id="addErr"></span>
+      </div>
+      <div class="card" style="overflow-x:auto">
+        <div class="m" style="margin-bottom:6px">Items with price 0 or switched off are hidden from customers.</div>
+        <table id="mt"></table>
+      </div>
+    </div>
+    </div>
+
+    <!-- ===== FESTIVAL ===== -->
+    <div id="festSec" hidden>
+      <div class="secnote">Festival: gifts and festive items, festival orders</div>
+      <div class="card pausebar" id="festOnCard">
+        <div><strong id="festOnTitle"></strong><div class="m" id="festOnSub"></div></div>
+        <button id="festOnBtn"></button>
+      </div>
+      <div class="card" id="festNameCard">
+        <strong>Festival we are targeting</strong>
+        <div class="m">Type the festival name (e.g. Diwali). Customers see it in bold, highlighted, on the festival page and the home banner.</div>
+        <div class="frow" style="margin-top:8px">
+          <input id="fnameIn" type="text" maxlength="40" placeholder="e.g. Diwali" style="flex:1;min-width:180px">
+          <button id="fnameBtn">Save</button><span class="m" id="fnameMsg"></span>
+        </div>
+      </div>
+      <div class="card pausebar" id="festPauseCard">
+        <div><strong id="festPauseTitle"></strong><div class="m" id="festPauseSub"></div></div>
+        <button id="festPauseBtn"></button>
+      </div>
+      <div class="card" id="festSchedCard">
+        <strong>Auto pause by time</strong>
+        <div class="m">Pause festival orders by itself every day, and open them again at the time you set (India time).</div>
+        <div class="frow" style="margin-top:8px">
+          <label class="m"><input type="checkbox" id="festSchedOn"> Use auto pause</label>
+          <label class="m">Pause at <input type="time" id="festSchedFrom"></label>
+          <label class="m">Resume at <input type="time" id="festSchedTo"></label>
+          <button id="festSchedSave">Save</button>
+        </div>
+        <div class="m" id="festSchedMsg" style="margin-top:6px"></div>
+      </div>
+      <div class="tabs">
+        <button id="fTabO" class="on">Orders</button>
+        <button id="fTabI">Add items</button>
+        <button id="fTabC">Contact details</button>
+      </div>
+      <div id="festOrdersPane">
+        <div class="tiles" id="festTiles"></div>
+        <div id="festOrders"></div>
+      </div>
+      <div id="festItemsPane" hidden>
+      <div class="card">
+        <strong>Add a festival item</strong>
+        <div style="margin-top:8px">
+          <input id="fnn" type="text" maxlength="60" placeholder="Item name (e.g. Gift hamper)" style="width:100%;margin-bottom:6px">
+          <textarea id="fnd" rows="2" maxlength="300" placeholder="Short description (optional)" style="width:100%;margin-bottom:6px"></textarea>
+          <div class="frow"><input id="fnp" type="number" min="0" placeholder="Price ₹ (0 = ask for price)" style="width:200px"><input id="fnf" type="file" accept="image/*"></div>
+          <img id="fnpre" class="fpre" alt="" hidden>
+          <div style="margin-top:8px"><button id="faddBtn">Add item</button> <span class="err" id="faddErr"></span></div>
+        </div>
+      </div>
+        <div id="flist"></div>
+      </div>
+      <div id="festContactPane" hidden>
+      <div class="card">
+        <strong>Festival details</strong>
+        <div class="grid" style="margin-top:8px">
+          <label class="m">Section title<input id="ftitle" type="text" maxlength="40" placeholder="e.g. Diwali Special" style="width:100%"></label>
+          <label class="m">Festival in-charge (name)<input id="fcname" type="text" maxlength="40" placeholder="Ekta" style="width:100%"></label>
+          <label class="m">Festival phone (call and WhatsApp)<input id="fphone" type="tel" inputmode="numeric" maxlength="10" placeholder="10-digit number" style="width:100%"></label>
+        </div>
+        <div style="margin-top:8px"><button id="fsetBtn">Save details</button> <span class="m" id="ftitleMsg"></span></div>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var esc = function(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); };
+  function waUrl(n){ var m=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)||navigator.maxTouchPoints>1; return m ? 'https://wa.me/'+n : 'https://api.whatsapp.com/send?phone='+n; }
+  var PW = localStorage.getItem('sapraPw') || sessionStorage.getItem('sapraPw') || '';
+  var ts = Number(localStorage.getItem('sapraTs') || 0);
+  if(PW && ts && Date.now() - ts > 12*3600*1000){ PW=''; localStorage.removeItem('sapraPw'); sessionStorage.removeItem('sapraPw'); }
+  var accepting = true, shopOn = true, festOn = true, timer = null, lastNew = -1;
+  var OS = ['New','Preparing','Ready','Collected','Cancelled'];
+  var PS = ['Pay at shop','Paid (cash)','Paid (online)'];
+
+  function api(path, body){
+    var o = {headers:{'x-admin-password':PW}};
+    if(body){ o.method='POST'; o.headers['content-type']='application/json'; o.body=JSON.stringify(body); }
+    return fetch(path,o).then(function(r){
+      if(r.status===401){ logout(); throw new Error('auth'); }
+      if(r.status===429||r.status===503){ return r.json().then(function(j){ var e=new Error('locked'); e.msg=j.message; throw e; }); }
+      return r.json();
+    });
+  }
+
+  function logout(){ PW=''; localStorage.removeItem('sapraPw'); localStorage.removeItem('sapraTs'); sessionStorage.removeItem('sapraPw'); clearInterval(timer); $('app').hidden=true; $('login').hidden=false; }
+  $('logout').onclick = logout;
+  var pin = '', busy = false;
+  function paint(){ var d = document.querySelectorAll('#dots i'); for(var k=0;k<d.length;k++) d[k].className = k<pin.length ? 'on' : ''; }
+  function press(ch){
+    if(busy) return;
+    $('loginErr').textContent = '';
+    if(ch==='del') pin = pin.slice(0,-1);
+    else if(ch==='clr') pin = '';
+    else if(pin.length < 4) pin += ch;
+    paint();
+    if(pin.length === 4) submitPin();
+  }
+  function submitPin(){
+    busy = true; PW = pin;
+    api('/api/admin/orders').then(function(d){
+      (($('keep').checked) ? localStorage : sessionStorage).setItem('sapraPw', PW);
+      localStorage.setItem('sapraTs', String(Date.now()));
+      pin = ''; paint(); start(d);
+    }).catch(function(e){
+      PW = ''; pin = ''; paint();
+      var box = $('pinBox'); box.classList.remove('shake'); void box.offsetWidth; box.classList.add('shake');
+      if(e.message==='auth') $('loginErr').textContent = 'Wrong PIN. Please try again.';
+      else if(e.message==='locked') $('loginErr').textContent = e.msg || 'Too many attempts. Please wait 10 minutes.';
+      else $('loginErr').textContent = 'Could not connect. Check your internet and try again.';
+    }).then(function(){ busy = false; });
+  }
+  $('keys').addEventListener('click', function(e){ var b = e.target.closest('button'); if(b) press(b.dataset.k); });
+  document.addEventListener('keydown', function(e){
+    if($('login').hidden) return;
+    if(/^[0-9]$/.test(e.key)) press(e.key);
+    else if(e.key==='Backspace') press('del');
+  });
+  if(PW){ api('/api/admin/orders').then(start).catch(function(){}); }
+
+  function start(d){
+    $('login').hidden=true; $('app').hidden=false;
+    render(d);
+    clearInterval(timer);
+    timer = setInterval(refresh, 20000);
+  }
+  function refresh(){ api('/api/admin/orders').then(render).catch(function(){}); }
+
+  var sec = 'shop';
+  function tilesHtml(list, today){
+    var cnt = {New:0, Preparing:0, Ready:0}, sum = 0;
+    list.forEach(function(o){ if(cnt[o.status]!==undefined) cnt[o.status]++; if(o.created_at.slice(0,10)===today && o.status!=='Cancelled') sum+=o.total; });
+    return '<div class="tile">New<b>'+cnt.New+'</b></div><div class="tile">Preparing<b>'+cnt.Preparing+'</b></div><div class="tile">Ready<b>'+cnt.Ready+'</b></div><div class="tile">Today\'s total<b>\u20B9'+sum+'</b></div>';
+  }
+  function ordersHtml(list, empty){
+    return list.length ? list.map(function(o){
+      var t = o.created_at.replace('T',' ').slice(0,16);
+      return '<div class="card"><div class="oh"><span><span class="oid">'+esc(o.order_id)+'</span> <span class="tag'+(o.status==='New'?' new':'')+'">'+esc(o.status)+'</span></span><span class="m">'+esc(t)+'</span></div>'
+        + '<div>'+esc(o.items_text)+'</div>'
+        + '<div><strong>\u20B9'+o.total+'</strong> \u00B7 '+esc(o.method)+'</div>'
+        + '<div class="m">'+esc(o.name)+' \u00B7 <a href="tel:'+esc(o.phone)+'">'+esc(o.phone)+'</a> \u00B7 <a target="_blank" rel="noopener" href="'+waUrl('91'+o.phone)+'">WhatsApp</a></div>'
+        + (o.note?'<div class="m">Note: '+esc(o.note)+'</div>':'')
+        + '<div class="sel"><label class="m">Order <select data-oid="'+esc(o.order_id)+'" data-f="status">'+OS.map(function(s){return '<option'+(s===o.status?' selected':'')+'>'+s+'</option>';}).join('')+'</select></label>'
+        + '<label class="m">Payment <select data-oid="'+esc(o.order_id)+'" data-f="pay_status">'+PS.map(function(s){return '<option'+(s===o.pay_status?' selected':'')+'>'+s+'</option>';}).join('')+'</select></label></div></div>';
+    }).join('') : '<div class="card m">'+empty+'</div>';
+  }
+
+  function fmt12(t){ var h = Number(String(t).slice(0,2)); return ((h%12)||12)+':'+String(t).slice(3)+' '+(h>=12?'PM':'AM'); }
+  var schedDirty = {shop:false, festival:false};
+  function schedEls(scope){ var p = scope==='shop' ? 'shop' : 'fest'; return {on:$(p+'SchedOn'), from:$(p+'SchedFrom'), to:$(p+'SchedTo'), msg:$(p+'SchedMsg'), btn:$(p+'SchedSave'), card:$(p+'SchedCard')}; }
+  function paintSched(scope, sc){
+    if(!sc) return;
+    var e = schedEls(scope);
+    if(!schedDirty[scope]){ e.on.checked = !!sc.on; e.from.value = sc.from; e.to.value = sc.to; }
+    e.msg.textContent = sc.active ? 'Paused by the timer right now. Orders open again at '+fmt12(sc.to)+'.'
+      : sc.on ? 'Auto pause is ON: orders pause every day at '+fmt12(sc.from)+' and open again at '+fmt12(sc.to)+'.'
+      : 'Auto pause is OFF.';
+  }
+  ['shop','festival'].forEach(function(scope){
+    var e = schedEls(scope);
+    e.card.addEventListener('input', function(){ schedDirty[scope] = true; });
+    e.card.addEventListener('change', function(){ schedDirty[scope] = true; });
+    e.btn.onclick = function(){
+      if(!e.from.value || !e.to.value){ e.msg.textContent = 'Please choose both times.'; return; }
+      e.msg.textContent = 'Saving...';
+      api('/api/admin/schedule', {scope:scope, on:e.on.checked, from:e.from.value, to:e.to.value}).then(function(r){
+        if(r.ok){ schedDirty[scope] = false; refresh(); } else e.msg.textContent = r.message || 'Error';
+      });
+    };
+  });
+
+  function render(d){
+    accepting = d.accepting; shopOn = d.shopOn !== false; festOn = d.festOn !== false;
+    var shopL = d.orders || [], festL = d.festOrders || [];
+    var today = new Date(Date.now()+5.5*3600e3).toISOString().slice(0,10);
+    $('shopTiles').innerHTML = tilesHtml(shopL, today);
+    $('festTiles').innerHTML = tilesHtml(festL, today);
+    $('pauseCard').classList.toggle('off', !accepting);
+    $('pauseTitle').textContent = accepting ? 'Pause both: shop and festival' : 'Both are paused (shop and festival)';
+    $('pauseSub').textContent = accepting ? 'Customers can order now.' : 'Customers see your pause message.';
+    $('pauseBtn').textContent = accepting ? 'Pause both' : 'Resume both';
+    $('pauseBtn').className = accepting ? 'danger' : '';
+    function secPause(pre, label, on, sc){
+      var paused = !on, auto = on && sc && sc.active;
+      $(pre+'PauseCard').classList.toggle('off', paused || auto || !accepting);
+      $(pre+'PauseTitle').textContent = paused ? label+' orders are paused' : auto ? label+' orders are paused by the timer' : label+' orders: taking orders';
+      $(pre+'PauseSub').textContent = paused ? 'Customers cannot order from the '+label.toLowerCase()+' until you resume.' : auto ? 'They open again at '+fmt12(sc.to)+'.' : (accepting ? 'Customers can order now.' : 'Everything is paused from the top button.');
+      $(pre+'PauseBtn').textContent = paused ? 'Resume '+label.toLowerCase()+' orders' : 'Pause '+label.toLowerCase()+' orders';
+      $(pre+'PauseBtn').className = paused ? '' : 'danger';
+    }
+    var sched = d.sched || {};
+    secPause('shop','Shop',shopOn,sched.shop); secPause('fest','Festival',festOn,sched.festival);
+    paintSched('shop', sched.shop); paintSched('festival', sched.festival);
+    var anyPaused = !accepting || !shopOn || !festOn || (sched.shop && sched.shop.active) || (sched.festival && sched.festival.active);
+    $('msgCard').hidden = !anyPaused;
+    if(anyPaused && document.activeElement !== $('pmsg')) $('pmsg').value = d.pauseMessage || '';
+
+    var nShop = shopL.filter(function(o){return o.status==='New';}).length;
+    var nFest = festL.filter(function(o){return o.status==='New';}).length;
+    $('badgeShop').textContent = nShop || ''; $('badgeFest').textContent = nFest || '';
+    var newCount = nShop + nFest;
+    document.title = (newCount ? '('+newCount+') ' : '') + 'SAPRA TEA STALL - Admin';
+    if(lastNew>=0 && newCount>lastNew){ try{ new Audio('data:audio/wav;base64,UklGRlQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YTAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA').play(); }catch(e){} }
+    lastNew = newCount;
+
+    $('orders').innerHTML = ordersHtml(shopL, 'No shop orders yet. This page checks for new orders every 20 seconds.');
+    $('festOrders').innerHTML = ordersHtml(festL, 'No festival orders yet. This page checks for new orders every 20 seconds.');
+  }
+
+  function onStatusChange(e){
+    var s = e.target.closest('select'); if(!s) return;
+    var body = {order_id:s.dataset.oid}; body[s.dataset.f] = s.value;
+    api('/api/admin/order', body).then(refresh);
+  }
+  $('orders').addEventListener('change', onStatusChange);
+  $('festOrders').addEventListener('change', onStatusChange);
+
+  $('pauseBtn').onclick = function(){
+    var body = {scope:'all', accepting: !accepting};
+    if(accepting && !confirm('Pause BOTH shop and festival orders? Customers will not be able to order until you resume.')) return;
+    if(!accepting) body.message = $('pmsg').value;
+    api('/api/admin/accepting', body).then(refresh);
+  };
+  function sectionPause(scope, label, getOn){
+    return function(){
+      var on = getOn(), body = {scope:scope, accepting: !on};
+      if(on && !confirm('Pause '+label+' orders? Customers will not be able to order from the '+label+' until you resume.')) return;
+      if(!on) body.message = $('pmsg').value;
+      api('/api/admin/accepting', body).then(refresh);
+    };
+  }
+  $('shopPauseBtn').onclick = sectionPause('shop','shop', function(){ return shopOn; });
+  $('festPauseBtn').onclick = sectionPause('festival','festival', function(){ return festOn; });
+  $('pmsg').addEventListener('change', function(){ api('/api/admin/accepting', {scope:'message', message:$('pmsg').value}); });
+
+  function setOn(ids, on){ ids.forEach(function(i){ $(i).className = (i===on) ? 'on' : ''; }); }
+  function showSection(n){
+    sec = n;
+    $('secShop').className = n==='shop' ? 'on' : ''; $('secFest').className = n==='fest' ? 'on' : '';
+    $('shopSec').hidden = n!=='shop'; $('festSec').hidden = n!=='fest';
+    if(n==='fest') showFest('O'); else showShop('O');
+  }
+  function showShop(t){
+    setOn(['sTabO','sTabM'], t==='O' ? 'sTabO' : 'sTabM');
+    $('shopOrdersPane').hidden = t!=='O'; $('menuPane').hidden = t!=='M';
+    if(t==='M') loadMenu();
+  }
+  function showFest(t){
+    setOn(['fTabO','fTabI','fTabC'], t==='O' ? 'fTabO' : t==='I' ? 'fTabI' : 'fTabC');
+    $('festOrdersPane').hidden = t!=='O'; $('festItemsPane').hidden = t!=='I'; $('festContactPane').hidden = t!=='C';
+    loadFest();
+  }
+  function jump(el){ try{ el.scrollIntoView({behavior:'smooth', block:'start'}); }catch(e){ el.scrollIntoView(true); } }
+  $('secShop').onclick = function(){ showSection('shop'); jump($('shopSec')); };
+  $('secFest').onclick = function(){ showSection('fest'); jump($('festSec')); };
+  $('sTabO').onclick = function(){ showShop('O'); jump($('sTabO').parentNode); };
+  $('sTabM').onclick = function(){ showShop('M'); jump($('sTabO').parentNode); };
+  $('fTabO').onclick = function(){ showFest('O'); jump($('fTabO').parentNode); };
+  $('fTabI').onclick = function(){ showFest('I'); jump($('fTabO').parentNode); };
+  $('fTabC').onclick = function(){ showFest('C'); jump($('fTabO').parentNode); };
+
+  function loadMenu(){
+    api('/api/admin/menu').then(function(d){
+      var cats = {}; d.menu.forEach(function(m){ cats[m.category]=1; });
+      $('cats').innerHTML = Object.keys(cats).map(function(c){return '<option value="'+esc(c)+'">';}).join('');
+      $('mt').innerHTML = '<tr><th>Category</th><th>Item</th><th>Kind / size</th><th>₹</th><th>On</th><th></th></tr>' + d.menu.map(function(m){
+        return '<tr data-id="'+m.id+'"><td><input type="text" data-k="category" value="'+esc(m.category)+'"></td>'
+          + '<td><input type="text" data-k="item" value="'+esc(m.item)+'"></td>'
+          + '<td><input type="text" data-k="variant" value="'+esc(m.variant)+'"></td>'
+          + '<td><input class="p" type="number" min="0" data-k="price" value="'+m.price+'"></td>'
+          + '<td><input type="checkbox" data-k="available"'+(m.available?' checked':'')+'></td>'
+          + '<td style="white-space:nowrap"><button data-save="'+m.id+'">Save</button> <button class="danger" data-del="'+m.id+'">Delete</button></td></tr>';
+      }).join('');
+    });
+  }
+  function rowData(tr){
+    var o = {id:Number(tr.dataset.id)};
+    tr.querySelectorAll('[data-k]').forEach(function(i){ o[i.dataset.k] = i.type==='checkbox' ? i.checked : i.value; });
+    return o;
+  }
+  $('mt').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    var tr = b.closest('tr');
+    if(b.dataset.save){
+      b.textContent='Saving…';
+      api('/api/admin/menu', rowData(tr)).then(function(r){ b.textContent = r.ok ? 'Saved' : 'Error'; setTimeout(function(){b.textContent='Save';},1200); });
+    } else if(b.dataset.del){
+      if(confirm('Delete this item for good?')) api('/api/admin/menu', {id:Number(b.dataset.del), delete:true}).then(loadMenu);
+    }
+  });
+  /* ---------- Festival ---------- */
+  function shrink(file, cb){
+    var img = new Image(), url = URL.createObjectURL(file);
+    img.onload = function(){
+      var M = 700, k = Math.min(1, M/Math.max(img.width, img.height));
+      var c = document.createElement('canvas'); c.width = Math.round(img.width*k); c.height = Math.round(img.height*k);
+      var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0,0,c.width,c.height); x.drawImage(img,0,0,c.width,c.height);
+      URL.revokeObjectURL(url); cb(c.toDataURL('image/jpeg', 0.78));
+    };
+    img.onerror = function(){ URL.revokeObjectURL(url); cb(null); };
+    img.src = url;
+  }
+  function fcard(m){
+    var pic = m.has_img ? '<img data-pre alt="" src="/api/festival/img/'+m.id+'?v='+m.img_v+'">' : '<div class="noimg" data-pre>No photo</div>';
+    return '<div class="card fcard" data-id="'+m.id+'"><div class="fimg">'+pic+'</div><div>'
+      + '<input type="text" data-k="name" maxlength="60" value="'+esc(m.name)+'" placeholder="Item name">'
+      + '<textarea data-k="description" rows="2" maxlength="300" placeholder="Description">'+esc(m.description)+'</textarea>'
+      + '<div class="frow"><label class="m">₹ <input class="p" type="number" min="0" data-k="price" value="'+m.price+'"></label>'
+      + '<label class="m"><input type="checkbox" data-k="available"'+(m.available?' checked':'')+'> Show</label></div>'
+      + '<div class="frow" style="margin-top:6px"><input type="file" accept="image/*" data-file><button class="ghost" data-rm>Remove photo</button></div>'
+      + '<div class="frow" style="margin-top:8px"><button data-fsave>Save</button><button class="danger" data-fdel>Delete</button><span class="m" data-fmsg></span></div>'
+      + '</div></div>';
+  }
+  var festShow = false;
+  function paintFestOn(){
+    $('festOnCard').classList.toggle('off', !festShow);
+    $('festOnTitle').textContent = festShow ? 'Festival section is ON' : 'Festival section is OFF (customers see "Gifts will be available soon")';
+    $('festOnSub').textContent = festShow ? 'Customers can see your gifts on the website.' : 'Your items stay saved. Turn ON when the festival starts.';
+    $('festOnBtn').textContent = festShow ? 'Turn OFF (festival over)' : 'Turn ON for the festival';
+    $('festOnBtn').className = festShow ? 'danger' : '';
+  }
+  function loadFest(){
+    api('/api/admin/festival').then(function(d){
+      var st = d.settings || {};
+      festShow = !!st.on; paintFestOn(); $('fnameIn').value = st.festivalName || '';
+      $('ftitle').value = st.title || ''; $('fcname').value = st.contactName || ''; $('fphone').value = st.phone || '';
+      $('flist').innerHTML = d.items.length ? d.items.map(fcard).join('') : '<div class="card m">No festival items yet. Add one above.</div>';
+    });
+  }
+  $('festOnBtn').onclick = function(){
+    var next = !festShow;
+    if(!next && !confirm('Turn the festival section OFF? Customers will see "Gifts will be available soon".')) return;
+    api('/api/admin/festival', {action:'settings', on:next}).then(function(r){ if(r.ok){ festShow = next; paintFestOn(); } });
+  };
+  $('fsetBtn').onclick = function(){
+    api('/api/admin/festival', {action:'settings', title:$('ftitle').value, contactName:$('fcname').value, phone:$('fphone').value}).then(function(r){
+      $('ftitleMsg').textContent = r.ok ? 'Saved' : (r.message || 'Error'); setTimeout(function(){ $('ftitleMsg').textContent=''; }, 2500);
+    });
+  };
+  $('fnameBtn').onclick = function(){
+    api('/api/admin/festival', {action:'settings', festivalName:$('fnameIn').value}).then(function(r){
+      $('fnameMsg').textContent = r.ok ? 'Saved' : (r.message || 'Error'); setTimeout(function(){ $('fnameMsg').textContent=''; }, 2500);
+    });
+  };
+  var newImg;
+  $('fnf').addEventListener('change', function(){
+    var f = this.files[0]; newImg = undefined; $('fnpre').hidden = true;
+    if(!f) return;
+    shrink(f, function(u){
+      if(!u){ $('faddErr').textContent = 'Could not read that picture. Try a JPG or PNG.'; return; }
+      $('faddErr').textContent = ''; newImg = u; $('fnpre').src = u; $('fnpre').hidden = false;
+    });
+  });
+  $('faddBtn').onclick = function(){
+    $('faddErr').textContent = '';
+    api('/api/admin/festival', {name:$('fnn').value, description:$('fnd').value, price:$('fnp').value, available:true, image:newImg}).then(function(r){
+      if(!r.ok){ $('faddErr').textContent = r.message || 'Error'; return; }
+      $('fnn').value=''; $('fnd').value=''; $('fnp').value=''; $('fnf').value=''; $('fnpre').hidden=true; newImg=undefined;
+      loadFest();
+    });
+  };
+  $('flist').addEventListener('change', function(e){
+    var inp = e.target.closest('[data-file]'); if(!inp || !inp.files[0]) return;
+    var card = inp.closest('.fcard'), msg = card.querySelector('[data-fmsg]');
+    shrink(inp.files[0], function(u){
+      if(!u){ msg.textContent = 'Could not read that picture.'; return; }
+      card._img = u;
+      var box = card.querySelector('.fimg'); box.innerHTML = '<img data-pre alt="" src="'+u+'">';
+      msg.textContent = 'New photo chosen. Tap Save.';
+    });
+  });
+  $('flist').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    var card = b.closest('.fcard'), id = Number(card.dataset.id), msg = card.querySelector('[data-fmsg]');
+    if(b.hasAttribute('data-rm')){
+      card._img = ''; card.querySelector('.fimg').innerHTML = '<div class="noimg" data-pre>No photo</div>'; msg.textContent = 'Photo removed. Tap Save.';
+    } else if(b.hasAttribute('data-fsave')){
+      var o = {id:id};
+      card.querySelectorAll('[data-k]').forEach(function(i){ o[i.dataset.k] = i.type==='checkbox' ? i.checked : i.value; });
+      if(card._img !== undefined) o.image = card._img;
+      msg.textContent = 'Saving...';
+      api('/api/admin/festival', o).then(function(r){
+        if(r.ok){ card._img = undefined; msg.textContent = 'Saved'; } else msg.textContent = r.message || 'Error';
+      });
+    } else if(b.hasAttribute('data-fdel')){
+      if(confirm('Delete this festival item for good?')) api('/api/admin/festival', {id:id, delete:true}).then(loadFest);
+    }
+  });
+
+  $('addBtn').onclick = function(){
+    $('addErr').textContent='';
+    api('/api/admin/menu', {category:$('nc').value, item:$('ni').value, variant:$('nv').value, price:$('np').value, available:true}).then(function(r){
+      if(!r.ok){ $('addErr').textContent=r.message; return; }
+      ['ni','nv','np'].forEach(function(i){ $(i).value=''; }); loadMenu();
+    });
+  };
+})();
+</script>
+<script>
+(function(){
+  [['kebab','kebabBtn','kebabList'],['kebab2','kebabBtn2','kebabList2']].forEach(function(ids){
+    var box=document.getElementById(ids[0]), btn=document.getElementById(ids[1]), list=document.getElementById(ids[2]);
+    if(!box) return;
+    function setOpen(o){ list.hidden=!o; btn.setAttribute('aria-expanded',o?'true':'false'); }
+    btn.addEventListener('click',function(e){ e.stopPropagation(); setOpen(list.hidden); });
+    document.addEventListener('click',function(e){ if(!box.contains(e.target)) setOpen(false); });
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ setOpen(false); btn.focus(); } });
+    list.addEventListener('click',function(e){ if(e.target.closest('a')) setOpen(false); });
+  });
+})();
+</script>
+</body>
+</html>
