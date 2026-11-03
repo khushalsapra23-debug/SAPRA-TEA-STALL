@@ -14,4 +14,4 @@ database_name = "sapra-tea-stall"
 database_id = "374fbf85-c3a0-4376-99ee-f9b124b2baab"
 
 [vars]
-STAFF_LOGINS = "khushal:2007"
+STAFF_LOGINS = "STAFF:2309"
